@@ -16,21 +16,19 @@ AquaLua is a modern programming language designed specifically for AI and machin
 ## 📦 Quick Start
 
 ### Download & Install
-1. Download the latest release from [Releases](../../releases)
+1. Download the latest release from [Releases](../../releases) Note:if you are early there may not be any releases
 2. Extract `AquaLua_Installer.zip`
 3. Run `install.bat` as Administrator
 4. Start coding with `aqualua` and `aqualua-ide`
 
 ### Hello World
-```aqualua
-fn main() {
-    print("Hello, AquaLua!")
-    
-    // AI/ML example
-    tensor weights = random([3, 3])
-    tensor result = relu(weights)
-    print("Tensor operations complete!")
-}
+```
+print("Hello world")
+#if you want to write it in python
+ast_exec("
+import math # this is just an example that you can import anything
+print("hello world")
+")
 ```
 
 ### Run Your Program
@@ -134,3 +132,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 **AquaLua** - Making AI development faster and more intuitive."# AquaLua" 
+
