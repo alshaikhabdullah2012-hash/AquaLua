@@ -1,0 +1,44 @@
+# Basic AquaLua Syntax Check
+print("=== AquaLua Syntax Check ===")
+
+# Variables
+let x = 42
+let name = "AquaLua"
+print("x =", x)
+print("name =", name)
+
+# Function with brace syntax
+fn add(a, b) {
+    return a + b
+}
+
+# Function with colon syntax  
+fn multiply(a, b):
+    return a * b
+
+print("add(5, 3) =", add(5, 3))
+print("multiply(4, 6) =", multiply(4, 6))
+
+# Control flow with braces
+if x > 30 {
+    print("x > 30 (brace syntax)")
+}
+
+# Control flow with colon
+if x > 40:
+    print("x > 40 (colon syntax)")
+
+# Loop with braces
+for i in range(3) {
+    print("Loop i =", i)
+}
+
+# Error handling
+try {
+    let result = 10 / 2
+    print("Division result:", result)
+} except {
+    print("Error occurred")
+}
+
+print("=== Syntax Check Complete ===")

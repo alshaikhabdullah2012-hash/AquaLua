@@ -1,0 +1,56 @@
+# AquaLua Pygame Test - Using transpiled bindings
+print("[DEBUG] Starting pygame test with AquaLua syntax...")
+
+# Import pygame using AquaLua syntax
+import pygame
+
+print("[DEBUG] Pygame imported successfully")
+
+# Initialize pygame
+pygame.init()
+print("[DEBUG] Pygame initialized")
+
+# Create window
+let screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption("AquaLua Pygame Test")
+print("[DEBUG] Window created: 800x600")
+
+# Game variables
+let running = True
+let player_x = 400
+let player_y = 300
+let clock = pygame.time.Clock()
+
+print("[DEBUG] Game variables initialized")
+
+# Main game loop
+let frame_count = 0
+while running and frame_count < 100:
+    print("[DEBUG] Frame:", frame_count)
+    
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            print("[DEBUG] Quit event received")
+    
+    # Clear screen (black)
+    screen.fill((0, 0, 0))
+    
+    # Draw player (white rectangle)
+    pygame.draw.rect(screen, (255, 255, 255), (player_x, player_y, 50, 50))
+    
+    # Update display
+    pygame.display.flip()
+    
+    # Control frame rate
+    clock.tick(60)
+    
+    frame_count = frame_count + 1
+
+print("[DEBUG] Game loop ended")
+
+# Cleanup
+pygame.quit()
+print("[DEBUG] Pygame cleaned up")
+print("[DEBUG] Test completed successfully!")

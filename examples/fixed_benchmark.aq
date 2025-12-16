@@ -1,0 +1,392 @@
+# =============================================================================
+# AQUALUA PERFORMANCE BENCHMARK SUITE - FIXED VERSION
+# Complete language performance evaluation with proper AquaLua syntax
+# =============================================================================
+
+print("AquaLua Performance Benchmark Suite")
+print("Testing computational speed, FFI latency, and AI workload performance")
+print("=" * 60)
+
+# =============================================================================
+# HIGH-RESOLUTION TIMING UTILITIES
+# =============================================================================
+
+fn get_high_res_time() {
+    ast_exec("
+import time
+benchmark_time = time.perf_counter()
+")
+    return benchmark_time
+}
+
+# =============================================================================
+# 1. PURE EXECUTION SPEED BENCHMARKS
+# =============================================================================
+
+print("\n1. PURE EXECUTION SPEED BENCHMARKS")
+print("-" * 40)
+
+fn billion_loop_test() {
+    print("Billion-Loop Test: Counting to 100,000,000")
+    
+    let start_time = get_high_res_time()
+    
+    let counter = 0
+    let target = 100000000  # Reduced for reasonable test time
+    
+    while counter < target {
+        counter = counter + 1
+    }
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Final count: " + str(counter))
+    print("Time: " + str(elapsed_ms) + " ms")
+    print("Rate: " + str(target / elapsed_ms * 1000.0) + " ops/second")
+    
+    return elapsed_ms
+}
+
+fn leibniz_pi_test() {
+    print("Leibniz Pi Formula: 10,000,000 iterations")
+    
+    let start_time = get_high_res_time()
+    
+    let pi_estimate = 0.0
+    let iterations = 10000000
+    let i = 0
+    
+    while i < iterations {
+        let term = 1.0 / (2.0 * i + 1.0)
+        if i % 2 == 0 {
+            pi_estimate = pi_estimate + term
+        } else {
+            pi_estimate = pi_estimate - term
+        }
+        i = i + 1
+    }
+    
+    pi_estimate = pi_estimate * 4.0
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Pi estimate: " + str(pi_estimate))
+    print("Time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+fn prime_counting_test() {
+    print("Prime Counting: Numbers up to 1,000,000")
+    
+    let start_time = get_high_res_time()
+    
+    let limit = 1000000
+    let prime_count = 0
+    
+    let num = 2
+    while num <= limit {
+        let is_prime = true
+        let divisor = 2
+        
+        while divisor * divisor <= num {
+            if num % divisor == 0 {
+                is_prime = false
+                break
+            }
+            divisor = divisor + 1
+        }
+        
+        if is_prime {
+            prime_count = prime_count + 1
+        }
+        
+        num = num + 1
+    }
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Primes found: " + str(prime_count))
+    print("Time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+fn factorial_test() {
+    print("Factorial Computation: 1000!")
+    
+    let start_time = get_high_res_time()
+    
+    let result = 1.0
+    let n = 1000
+    let i = 1
+    
+    while i <= n {
+        result = result * i
+        i = i + 1
+    }
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("1000! computed (large number)")
+    print("Time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+# =============================================================================
+# 2. PYTHON BRIDGE LATENCY BENCHMARKS
+# =============================================================================
+
+print("\n2. PYTHON BRIDGE (FFI) LATENCY BENCHMARKS")
+print("-" * 40)
+
+fn python_bridge_overhead_test() {
+    print("No-Op Call Overhead: 1,000 ast_exec calls")
+    
+    let start_time = get_high_res_time()
+    
+    let iterations = 1000
+    let i = 0
+    
+    while i < iterations {
+        ast_exec("")
+        i = i + 1
+    }
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    let avg_latency_us = elapsed_ms * 1000.0 / iterations
+    print("Average call latency: " + str(avg_latency_us) + " microseconds")
+    print("Total time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+fn python_computation_test() {
+    print("Python Computation Test: Matrix operations")
+    
+    let start_time = get_high_res_time()
+    
+    ast_exec("
+import numpy as np
+import time
+
+# Create matrices
+size = 200
+matrix_a = np.random.random((size, size))
+matrix_b = np.random.random((size, size))
+
+# Perform computation
+result = np.dot(matrix_a, matrix_b)
+result_sum = np.sum(result)
+")
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Matrix computation completed")
+    print("Result sum: " + str(result_sum))
+    print("Time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+# =============================================================================
+# 3. AI-SPECIFIC RUNTIME PERFORMANCE
+# =============================================================================
+
+print("\n3. AI-SPECIFIC RUNTIME PERFORMANCE")
+print("-" * 40)
+
+fn matrix_operations_test() {
+    print("Matrix Operations: Native AquaLua implementation")
+    
+    let start_time = get_high_res_time()
+    
+    # Create matrices using AquaLua matrix functions
+    let size = 100
+    let matrix_a = matrix_random_normal([size, size], 0.0, 1.0)
+    let matrix_b = matrix_random_normal([size, size], 0.0, 1.0)
+    
+    # Perform matrix multiplication
+    let result = matrix_multiply(matrix_a, matrix_b)
+    let result_mean = matrix_mean(result)
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Matrix multiplication completed")
+    print("Result mean: " + str(result_mean))
+    print("Time: " + str(elapsed_ms) + " ms")
+    
+    return elapsed_ms
+}
+
+fn neural_network_simulation() {
+    print("Neural Network Simulation: Forward pass")
+    
+    let start_time = get_high_res_time()
+    
+    let input_size = 64
+    let hidden_size = 128
+    let output_size = 32
+    let iterations = 100
+    
+    # Create weight matrices
+    let weights1 = matrix_random_normal([input_size, hidden_size], 0.0, 0.1)
+    let weights2 = matrix_random_normal([hidden_size, output_size], 0.0, 0.1)
+    let bias1 = matrix_zeros([hidden_size])
+    let bias2 = matrix_zeros([output_size])
+    
+    # Create input
+    let input_data = matrix_random_normal([1, input_size], 0.0, 1.0)
+    
+    let i = 0
+    while i < iterations {
+        # Forward pass
+        let hidden = matrix_multiply(input_data, weights1)
+        hidden = matrix_add(hidden, bias1)
+        hidden = matrix_relu(hidden)
+        
+        let output = matrix_multiply(hidden, weights2)
+        output = matrix_add(output, bias2)
+        
+        # Use output as next input (recurrent-like)
+        if matrix_shape(output)[1] >= input_size {
+            input_data = matrix_slice(output, [0, 0], [1, input_size])
+        }
+        
+        i = i + 1
+    }
+    
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    
+    print("Neural network simulation completed")
+    print("Iterations: " + str(iterations))
+    print("Time: " + str(elapsed_ms) + " ms")
+    print("Rate: " + str(iterations / elapsed_ms * 1000.0) + " forward passes/second")
+    
+    return elapsed_ms
+}
+
+# =============================================================================
+# 4. SYSTEM RESOURCE METRICS
+# =============================================================================
+
+print("\n4. SYSTEM RESOURCE METRICS")
+print("-" * 40)
+
+fn memory_usage_test() {
+    print("Memory Usage Analysis")
+    
+    ast_exec("
+import psutil
+import os
+process = psutil.Process(os.getpid())
+initial_memory_mb = process.memory_info().rss / 1024 / 1024
+")
+    
+    print("Initial memory usage: " + str(initial_memory_mb) + " MB")
+    
+    # Allocate large data structure
+    let large_data = []
+    let i = 0
+    while i < 100000 {
+        large_data = append(large_data, i * 3.14159)
+        i = i + 1
+    }
+    
+    ast_exec("
+peak_memory_mb = process.memory_info().rss / 1024 / 1024
+memory_increase = peak_memory_mb - initial_memory_mb
+")
+    
+    print("Peak memory usage: " + str(peak_memory_mb) + " MB")
+    print("Memory increase: " + str(memory_increase) + " MB")
+    
+    # Clear data
+    large_data = []
+    
+    return memory_increase
+}
+
+# =============================================================================
+# BENCHMARK EXECUTION
+# =============================================================================
+
+print("\nEXECUTING BENCHMARK SUITE")
+print("=" * 60)
+
+# Run all benchmarks
+let results = {}
+
+print("\nRunning computational benchmarks...")
+results["billion_loop"] = billion_loop_test()
+print("")
+results["leibniz_pi"] = leibniz_pi_test()
+print("")
+results["prime_counting"] = prime_counting_test()
+print("")
+results["factorial"] = factorial_test()
+
+print("\nRunning Python bridge benchmarks...")
+results["bridge_overhead"] = python_bridge_overhead_test()
+print("")
+results["python_computation"] = python_computation_test()
+
+print("\nRunning AI workload benchmarks...")
+results["matrix_operations"] = matrix_operations_test()
+print("")
+results["neural_network"] = neural_network_simulation()
+
+print("\nRunning system resource tests...")
+results["memory_usage"] = memory_usage_test()
+
+# =============================================================================
+# FINAL RESULTS SUMMARY
+# =============================================================================
+
+print("\n" + "=" * 60)
+print("AQUALUA BENCHMARK RESULTS SUMMARY")
+print("=" * 60)
+
+print("\nCOMPUTATIONAL BENCHMARKS:")
+print("  Billion Loop Counter:     " + str(results["billion_loop"]) + " ms")
+print("  Leibniz Pi Calculation:   " + str(results["leibniz_pi"]) + " ms")
+print("  Prime Counting:           " + str(results["prime_counting"]) + " ms")
+print("  Factorial Computation:    " + str(results["factorial"]) + " ms")
+
+print("\nPYTHON BRIDGE BENCHMARKS:")
+print("  Bridge Call Overhead:     " + str(results["bridge_overhead"]) + " ms")
+print("  Python Computation:       " + str(results["python_computation"]) + " ms")
+
+print("\nAI WORKLOAD BENCHMARKS:")
+print("  Matrix Operations:        " + str(results["matrix_operations"]) + " ms")
+print("  Neural Network Sim:       " + str(results["neural_network"]) + " ms")
+
+print("\nSYSTEM RESOURCES:")
+print("  Memory Usage Increase:    " + str(results["memory_usage"]) + " MB")
+
+# Performance classification
+let total_compute_time = results["billion_loop"] + results["leibniz_pi"] + results["prime_counting"]
+
+print("\nPERFORMANCE CLASSIFICATION:")
+if total_compute_time < 1000 {
+    print("  Overall Performance: EXCELLENT (C-level)")
+} else if total_compute_time < 5000 {
+    print("  Overall Performance: GOOD (Java-level)")
+} else if total_compute_time < 20000 {
+    print("  Overall Performance: ACCEPTABLE (Python-level)")
+} else {
+    print("  Overall Performance: NEEDS OPTIMIZATION")
+}
+
+print("\nBenchmark suite completed successfully!")
+print("=" * 60)

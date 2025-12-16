@@ -1,0 +1,184 @@
+# AquaLua Performance Benchmark Suite
+print("AquaLua Performance Benchmark Suite")
+print("=" * 50)
+
+# High-resolution timing function
+fn get_time() {
+    ast_exec("
+import time
+current_time = time.perf_counter()
+")
+    return current_time
+}
+
+# Billion loop test
+fn test_billion_loop() {
+    print("Running billion loop test...")
+    
+    let start_time = get_time()
+    
+    let counter = 0
+    let target = 10000000
+    
+    while counter < target {
+        counter = counter + 1
+    }
+    
+    let end_time = get_time()
+    let elapsed = (end_time - start_time) * 1000.0
+    
+    print("Counted to: " + str(counter))
+    print("Time: " + str(elapsed) + " ms")
+    
+    return elapsed
+}
+
+# Pi calculation test
+fn test_pi_calculation() {
+    print("Running pi calculation test...")
+    
+    let start_time = get_time()
+    
+    let pi_estimate = 0.0
+    let iterations = 1000000
+    let i = 0
+    
+    while i < iterations {
+        let term = 1.0 / (2.0 * i + 1.0)
+        if i % 2 == 0 {
+            pi_estimate = pi_estimate + term
+        } else {
+            pi_estimate = pi_estimate - term
+        }
+        i = i + 1
+    }
+    
+    pi_estimate = pi_estimate * 4.0
+    
+    let end_time = get_time()
+    let elapsed = (end_time - start_time) * 1000.0
+    
+    print("Pi estimate: " + str(pi_estimate))
+    print("Time: " + str(elapsed) + " ms")
+    
+    return elapsed
+}
+
+# Python bridge test
+fn test_python_bridge() {
+    print("Running Python bridge test...")
+    
+    let start_time = get_time()
+    
+    let iterations = 1000
+    let i = 0
+    
+    while i < iterations {
+        ast_exec("pass")
+        i = i + 1
+    }
+    
+    let end_time = get_time()
+    let elapsed = (end_time - start_time) * 1000.0
+    
+    print("Bridge calls: " + str(iterations))
+    print("Time: " + str(elapsed) + " ms")
+    print("Avg per call: " + str(elapsed / iterations) + " ms")
+    
+    return elapsed
+}
+
+# Matrix operations test
+fn test_matrix_operations() {
+    print("Running matrix operations test...")
+    
+    let start_time = get_time()
+    
+    let size = 50
+    let matrix_a = matrix_random_normal([size, size], 0.0, 1.0)
+    let matrix_b = matrix_random_normal([size, size], 0.0, 1.0)
+    
+    let result = matrix_multiply(matrix_a, matrix_b)
+    let mean_result = matrix_mean(result)
+    
+    let end_time = get_time()
+    let elapsed = (end_time - start_time) * 1000.0
+    
+    print("Matrix size: " + str(size) + "x" + str(size))
+    print("Result mean: " + str(mean_result))
+    print("Time: " + str(elapsed) + " ms")
+    
+    return elapsed
+}
+
+# Memory usage test
+fn test_memory_usage() {
+    print("Running memory usage test...")
+    
+    ast_exec("
+import psutil
+import os
+process = psutil.Process(os.getpid())
+initial_memory = process.memory_info().rss / 1024 / 1024
+")
+    
+    print("Initial memory: " + str(initial_memory) + " MB")
+    
+    let large_list = []
+    let i = 0
+    while i < 100000 {
+        large_list = append(large_list, i * 3.14159)
+        i = i + 1
+    }
+    
+    ast_exec("
+peak_memory = process.memory_info().rss / 1024 / 1024
+memory_diff = peak_memory - initial_memory
+")
+    
+    print("Peak memory: " + str(peak_memory) + " MB")
+    print("Memory increase: " + str(memory_diff) + " MB")
+    
+    return memory_diff
+}
+
+# Run all benchmarks
+print("\nExecuting benchmarks...")
+print("-" * 30)
+
+let loop_time = test_billion_loop()
+print("")
+
+let pi_time = test_pi_calculation()
+print("")
+
+let bridge_time = test_python_bridge()
+print("")
+
+let matrix_time = test_matrix_operations()
+print("")
+
+let memory_usage = test_memory_usage()
+print("")
+
+# Summary
+print("BENCHMARK RESULTS SUMMARY")
+print("=" * 30)
+print("Loop test:        " + str(loop_time) + " ms")
+print("Pi calculation:   " + str(pi_time) + " ms")
+print("Python bridge:    " + str(bridge_time) + " ms")
+print("Matrix ops:       " + str(matrix_time) + " ms")
+print("Memory usage:     " + str(memory_usage) + " MB")
+
+let total_time = loop_time + pi_time + matrix_time
+print("Total compute:    " + str(total_time) + " ms")
+
+if total_time < 1000 {
+    print("Performance:      EXCELLENT")
+} else if total_time < 5000 {
+    print("Performance:      GOOD")
+} else {
+    print("Performance:      ACCEPTABLE")
+}
+
+print("Benchmark completed!")

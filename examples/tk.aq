@@ -1,0 +1,34 @@
+import pygame
+
+# 1. Initialize all imported Pygame modules
+pygame.init()
+
+# 2. Set the window size (width, height)
+# This creates a Surface object representing the window's visible part
+screen_width = 500
+screen_height = 500
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+# 3. Set the window title
+pygame.display.set_caption("My Basic Pygame Window")
+
+# Set up the game loop
+running = True
+while running:
+    # 4. Poll for events (e.g., user input, closing the window)
+    for event in pygame.event.get():
+        # Check if the event is the QUIT event (user clicked the 'X' button)
+        if event.type == pygame.QUIT:
+            running = False
+
+    # 5. Fill the screen with a color (optional, otherwise it's black by default)
+    # This wipes away everything from the previous frame
+    screen.fill((0, 0, 0)) # Fill with black (RGB value)
+
+    # 6. Update the display to make changes visible
+    pygame.display.flip() # or pygame.display.update()
+
+# 7. Once the loop ends, quit Pygame
+pygame.quit()
+
+

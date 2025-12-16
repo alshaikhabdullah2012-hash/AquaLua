@@ -1,0 +1,90 @@
+# AquaLua Datasets Library
+# Popular ML datasets for training and evaluation
+
+# Vision Datasets
+function load_imagenet(split="train"):
+    print("Loading ImageNet", split, "split...")
+    let dataset = create_dataset("imagenet", split)
+    return dataset
+
+function load_cifar10(split="train"):
+    print("Loading CIFAR-10", split, "split...")
+    let dataset = create_dataset("cifar10", split)
+    return dataset
+
+function load_mnist(split="train"):
+    print("Loading MNIST", split, "split...")
+    let dataset = create_dataset("mnist", split)
+    return dataset
+
+# Text Datasets
+function load_wikitext(version="103"):
+    print("Loading WikiText-" + version + "...")
+    let dataset = create_dataset("wikitext" + version)
+    return dataset
+
+function load_imdb():
+    print("Loading IMDB movie reviews...")
+    let dataset = create_dataset("imdb")
+    return dataset
+
+function load_squad(version="2.0"):
+    print("Loading SQuAD v" + version + "...")
+    let dataset = create_dataset("squad_v" + version)
+    return dataset
+
+# Audio Datasets
+function load_librispeech(split="train"):
+    print("Loading LibriSpeech", split, "split...")
+    let dataset = create_dataset("librispeech", split)
+    return dataset
+
+function load_common_voice(language="en"):
+    print("Loading Common Voice", language, "...")
+    let dataset = create_dataset("common_voice_" + language)
+    return dataset
+
+# Multimodal Datasets
+function load_coco(split="train"):
+    print("Loading MS-COCO", split, "split...")
+    let dataset = create_dataset("coco", split)
+    return dataset
+
+function load_flickr30k():
+    print("Loading Flickr30k...")
+    let dataset = create_dataset("flickr30k")
+    return dataset
+
+# Dataset utilities
+function create_dataloader(dataset, batch_size=32, shuffle=true):
+    print("Creating DataLoader with batch size:", batch_size)
+    let loader = DataLoader(dataset, batch_size, shuffle)
+    return loader
+
+function split_dataset(dataset, train_ratio=0.8):
+    let total_size = len(dataset)
+    let train_size = int(total_size * train_ratio)
+    let val_size = total_size - train_size
+    
+    let train_set = subset(dataset, 0, train_size)
+    let val_set = subset(dataset, train_size, total_size)
+    
+    return {train: train_set, val: val_set}
+
+# Data augmentation
+function augment_images(dataset):
+    print("Applying image augmentations...")
+    let augmented = apply_transforms(dataset, [
+        "random_flip",
+        "random_rotation", 
+        "color_jitter",
+        "normalize"
+    ])
+    return augmented
+
+# Usage examples:
+print("AquaLua Datasets Available:")
+print("Vision: imagenet, cifar10, mnist, coco")
+print("Text: wikitext, imdb, squad")
+print("Audio: librispeech, common_voice")
+print("Multimodal: coco, flickr30k")

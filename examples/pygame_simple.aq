@@ -1,0 +1,46 @@
+# Simple AquaLua Pygame Test
+print("[DEBUG] Starting simple pygame test...")
+
+import pygame
+
+print("[DEBUG] Pygame imported")
+
+# Initialize
+pygame.init()
+print("[DEBUG] Pygame initialized")
+
+# Create window  
+let screen = pygame.display.set_mode((400, 300))
+pygame.display.set_caption("AquaLua Test")
+print("[DEBUG] Window created")
+
+# Simple loop with counter
+let i = 0
+while i < 10:
+    print("[DEBUG] Loop iteration:", i)
+    
+    # Handle events
+    let events = pygame.event.get()
+    for event in events:
+        print("[DEBUG] Event type:", event.type)
+        if event.type == pygame.QUIT:
+            print("[DEBUG] Quit event - breaking loop")
+            i = 10  # Force exit
+    
+    # Clear screen
+    screen.fill((50, 50, 100))
+    
+    # Update display
+    pygame.display.flip()
+    
+    # Increment counter
+    i = i + 1
+    
+    # Small delay
+    pygame.time.wait(100)
+
+print("[DEBUG] Loop completed")
+
+# Cleanup
+pygame.quit()
+print("[DEBUG] Test finished successfully!")

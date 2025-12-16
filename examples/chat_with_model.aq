@@ -1,0 +1,28 @@
+// Chat with AquaLua AI Assistant
+let responses = ["Hello! How can I help you?", "That's interesting!", "Tell me more about that.", "I understand.", "Great question!"]
+let response_count = 0
+
+print("🤖 AquaLua AI Chat Interface")
+print("Type 'quit' to exit")
+print("========================================")
+
+while true {
+    let user_input = input("You: ")
+    
+    if user_input == "quit" {
+        print("Goodbye! 👋")
+        break
+    }
+    
+    // Simple response selection based on input length
+    let response_index = len(user_input) % 5
+    let ai_response = responses[response_index]
+    
+    print("AI: " + ai_response)
+    print("")
+    
+    response_count = response_count + 1
+}
+
+
+

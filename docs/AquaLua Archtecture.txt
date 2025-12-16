@@ -1,0 +1,198 @@
+D — Architecture diagrams and implementation plan
+
+Below are the architecture diagrams and component-by-component explanations. ASCII art + step-by-step for implementers.
+
+1) Overall Compiler & Runtime Overview (high-level)
++------------------------+
+|  Source (.aq files)    |
++------------------------+
+            |
+            v
++------------------------+
+|  Frontend              |
+|  - Lexer               |
+|  - Parser -> AST       |
+|  - Syntactic checks    |
++------------------------+
+            |
+            v
++------------------------+
+|  Typechecker           |
+|  - Resolve types       |
+|  - Shape/dtype check   |
+|  - Infer generics      |
++------------------------+
+            |
+            v
++------------------------+
+|  Graph Extractor       |
+|  - Identify ML graphs  |
+|  - Mark differentiable |
++------------------------+
+            |
+            v
++------------------------+
+|  IR / MLIR Lowering    |
+|  - Convert to IR nodes |
+|  - Fuse ops, optimize  |
++------------------------+
+            |
+            v
++------------------------+          +-----------------+
+|  Backend codegen       |  <---->  | Backend adapters|
+|  - CPU: LLVM           |          | (PyTorch, ONNX) |
+|  - GPU: CUDA/Triton    |          +-----------------+
+|  - WASM/WebGPU         |
++------------------------+
+            |
+            v
++------------------------+
+|  Executable / Model    |
+|  artifacts (.aqbin)    |
++------------------------+
+            |
+            v
++------------------------+
+|  Runtime               |
+|  - Device manager      |
+|  - Memory manager      |
+|  - Profiler            |
++------------------------+
+
+
+Notes
+
+The Graph Extractor is crucial: it recognizes functions and blocks where autodiff/graph compilation is possible (e.g., train step, fn forward in models).
+
+IR should be MLIR-compatible to reuse existing passes and device backends.
+
+2) Runtime components & flow for training
+[User program]
+   |
+   v
+[Aquila runtime launch]
+   |
+   +--> Device Manager (chooses GPU/CPU)
+   |
+   +--> Model loader (instantiates torch/module or custom module)
+   |
+   +--> Dataset loader (creates iterator + prefetchers)
+   |
+   +--> Training loop (compiled graph, or interpreter fallback)
+           |
+           +-> forward graph run (compiled IR)
+           +-> backward graph run (autodiff)
+           +-> optimizer step
+           +-> scheduler, logging
+
+
+Device Manager Responsibilities
+
+Query available devices (CUDA, ROCm, CPU, WebGPU)
+
+Manage memory budgets
+
+Assign tensors and kernels to devices
+
+Rebalance if memory pressure occurs
+
+Dataset loader
+
+Prefetch threads
+
+Optional decoding on CPU/GPU
+
+Batching with pinned memory
+
+3) Interaction with external backends (PyTorch / ONNX example)
+[Aquila IR]  --(lower)--> [TorchScript / ONNX IR] -> runtime exec
+         \
+          --(lower)--> [MLIR -> LLVM/CUDA] -> native kernels
+
+
+Implementation plan:
+
+Provide a backend abstraction with ops: matmul, conv2d, relu, sum, ...
+
+For each op, implement lowering to:
+
+PyTorch API call (fast prototype)
+
+MLIR op (production path)
+
+Graph optimizer rewrites multiple ops to fused kernels when using MLIR/CUDA backend.
+
+4) REPL & developer tooling flow
+User types -> REPL parser -> Typecheck -> Evaluate in embedded interpreter
+                 |
+                 V
+            Quick JIT compile (hot functions) -> cache
+
+
+The REPL will show:
+
+Tensor shapes & dtype
+
+Device assignments
+
+Compilation / caching messages
+
+5) Memory lifecycle & buffer reuse (liveness analysis diagram)
+Source graph
+  |
+  v
+Liveness analysis -> allocate buffers -> reuse non-overlapping buffers
+  |
+  v
+Kernel schedule -> GPU kernel dispatch
+
+
+Goal: minimize memory spikes and avoid OOM by reusing buffers when lifetimes don't overlap.
+
+6) Distributed training plan (later)
+
+train ... distributed(workers=N) DSL flag
+
+Parameter server / AllReduce support
+
+Integration with NCCL for GPU AllReduce
+
+Data parallel and model parallel modes
+
+Implementation priorities & milestones (practical)
+
+M1 (prototype) — 1–2 weeks
+
+Frontend: lexer + parser (EBNF) -> AST
+
+Minimal typechecker (primitives + tensor types)
+
+PyTorch-backed runtime bindings
+
+REPL & demo scripts (single-node CPU/GPU)
+
+Training DSL simple implementation (call into Python loop)
+
+M2 (IR & optimizations) — 4–6 weeks
+
+IR design (lowering from AST)
+
+Graph extractor for forward/backward
+
+MLIR bridging or custom IR with fuse passes
+
+Backend adapter for ONNX export
+
+M3 (Codegen) — 6–12 weeks
+
+CUDA/Triton kernel codegen for fused ops
+
+LLVM codegen for CPU hot loops
+
+Buffer reuse and memory planning
+
+M4 (Tooling & distribution) — concurrent
+
+CLI, formatter, linter, VSCode extension
+
+Packaging & docs

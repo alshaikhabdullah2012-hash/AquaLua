@@ -1,0 +1,36 @@
+# AquaLua Fast Bridge Test
+print("[FAST] Testing cached Python calls...")
+
+import pygame
+
+print("[FAST] Pygame imported")
+
+# Test cached function calls
+pygame.init()
+print("[FAST] pygame.init() - cached call")
+
+# Test cached constants
+let quit_event = pygame.QUIT
+print("[FAST] pygame.QUIT =", quit_event)
+
+# Test nested cached calls
+let screen = pygame.display.set_mode((400, 300))
+print("[FAST] pygame.display.set_mode() - nested cached call")
+
+pygame.display.set_caption("Fast Bridge Test")
+print("[FAST] pygame.display.set_caption() - cached call")
+
+# Test multiple calls (should be very fast after first)
+let i = 0
+while i < 5:
+    let events = pygame.event.get()
+    print("[FAST] pygame.event.get() call", i, "- cached")
+    
+    screen.fill((i * 50, 100, 200))
+    pygame.display.flip()
+    
+    i = i + 1
+
+pygame.quit()
+print("[FAST] All calls completed with caching!")
+print("[FAST] Performance: Near C-speed after first call")

@@ -1,0 +1,108 @@
+# AquaLua Game Demo - Using PyObject Libraries
+print("[GAME] Starting AquaLua game with PyObject libraries...")
+
+import pygame
+import math
+import random
+
+# Initialize pygame
+pygame.init()
+print("[GAME] Pygame initialized")
+
+# Game settings
+let WIDTH = 800
+let HEIGHT = 600
+let FPS = 60
+
+# Create window
+let screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("AquaLua PyObject Game Demo")
+let clock = pygame.time.Clock()
+
+print("[GAME] Window created:", WIDTH, "x", HEIGHT)
+
+# Game variables
+let player_x = WIDTH / 2
+let player_y = HEIGHT / 2
+let player_speed = 5
+let running = True
+let frame_count = 0
+
+# Colors (RGB tuples)
+let BLACK = (0, 0, 0)
+let WHITE = (255, 255, 255)
+let RED = (255, 0, 0)
+let GREEN = (0, 255, 0)
+let BLUE = (0, 0, 255)
+
+print("[GAME] Game variables initialized")
+
+# Main game loop
+while running and frame_count < 300:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            print("[GAME] Quit event received")
+    
+    # Get keyboard input
+    let keys = pygame.key.get_pressed()
+    
+    # Move player with arrow keys
+    if keys[pygame.K_LEFT]:
+        player_x = player_x - player_speed
+    if keys[pygame.K_RIGHT]:
+        player_x = player_x + player_speed
+    if keys[pygame.K_UP]:
+        player_y = player_y - player_speed
+    if keys[pygame.K_DOWN]:
+        player_y = player_y + player_speed
+    
+    # Keep player on screen
+    if player_x < 0:
+        player_x = 0
+    if player_x > WIDTH - 50:
+        player_x = WIDTH - 50
+    if player_y < 0:
+        player_y = 0
+    if player_y > HEIGHT - 50:
+        player_y = HEIGHT - 50
+    
+    # Clear screen
+    screen.fill(BLACK)
+    
+    # Draw player (white square)
+    pygame.draw.rect(screen, WHITE, (player_x, player_y, 50, 50))
+    
+    # Draw some decorative circles using math
+    let time = frame_count * 0.1
+    let circle_x = WIDTH / 2 + math.cos(time) * 200
+    let circle_y = HEIGHT / 2 + math.sin(time) * 100
+    pygame.draw.circle(screen, RED, (circle_x, circle_y), 20)
+    
+    # Draw random stars
+    let i = 0
+    while i < 5:
+        let star_x = random.randint(0, WIDTH)
+        let star_y = random.randint(0, HEIGHT)
+        pygame.draw.circle(screen, GREEN, (star_x, star_y), 2)
+        i = i + 1
+    
+    # Update display
+    pygame.display.flip()
+    clock.tick(FPS)
+    
+    frame_count = frame_count + 1
+    
+    # Print progress every 60 frames
+    if frame_count % 60 == 0:
+        print("[GAME] Frame:", frame_count, "Player:", player_x, player_y)
+
+print("[GAME] Game loop completed")
+
+# Cleanup
+pygame.quit()
+print("[GAME] Game finished successfully!")
+print("[GAME] Used PyObject libraries: pygame, math, random")
+print("[GAME] Zero library-specific code in AquaLua!")
+

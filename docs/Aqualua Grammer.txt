@@ -1,0 +1,100 @@
+A — Aquila EBNF (v0.1)
+
+This grammar uses common EBNF conventions:
+
+[] — optional
+
+{} — repetition (0 or more)
+
+| — alternation
+
+Terminal tokens are in quotes; nonterminals are unquoted identifiers.
+
+IDENT is identifier, INT integer literal, FLOAT float literal, STRING string literal.
+
+<program>           ::= { <topdecl> }
+
+<topdecl>           ::= <import_decl> | <type_decl> | <model_decl> | <fn_decl> | <stmt>
+
+<import_decl>       ::= "import" <module_path> [ "as" IDENT ] 
+<module_path>       ::= IDENT { "." IDENT }
+
+<type_decl>         ::= "type" IDENT "{" { <field_decl> } "}"
+<field_decl>        ::= IDENT ":" <type> ";"
+
+<model_decl>        ::= "model" IDENT "{" { <model_member> } "}"
+<model_member>      ::= <field_decl> | <fn_decl> 
+
+<fn_decl>           ::= "fn" IDENT "(" [ <param_list> ] ")" [ "->" <type> ] ":" <block>
+<param_list>        ::= <param> { "," <param> }
+<param>             ::= IDENT ":" <type>
+
+<stmt>              ::= <let_decl> | <const_decl> | <assign> | <expr_stmt> | <if_stmt> | <while_stmt> | <for_stmt> | <return_stmt> | <train_stmt> | <import_expr>
+
+<let_decl>          ::= "let" IDENT [ ":" <type> ] "=" <expr> ";"
+<const_decl>        ::= "const" IDENT ":" <type> "=" <expr> ";"
+
+<assign>            ::= <lhs> "=" <expr> ";"
+<lhs>               ::= IDENT | <expr_index> 
+
+<expr_stmt>         ::= <expr> ";"
+
+<if_stmt>           ::= "if" <expr> ":" <block> [ "else" ":" <block> ]
+<while_stmt>        ::= "while" <expr> ":" <block>
+<for_stmt>          ::= "for" IDENT "in" <expr> ":" <block>
+
+<return_stmt>       ::= "return" [ <expr> ] ";"
+
+<train_stmt>        ::= "train" "model" IDENT [ "using" <optimizer_expr> ] "on" <expr> "for" <INT> "epochs" ":" <block_with_step>
+<block_with_step>   ::= <block>     -- block expected to contain `step` sub-blocks and optional init/finalize
+
+<block>             ::= "{" { <stmt> } "}" | <simple_block>
+<simple_block>      ::= <stmt>       -- single statement block (allowed for brevity in examples)
+
+<expr>              ::= <binary_expr>
+<binary_expr>       ::= <binary_expr> <binop> <unary_expr> | <unary_expr>
+<unary_expr>        ::= <unop> <unary_expr> | <primary>
+<primary>           ::= <literal> | IDENT | <call_expr> | <paren_expr> | <tensor_type_ctor> | <model_ctor> | <index_expr>
+<paren_expr>        ::= "(" <expr> ")"
+
+<call_expr>         ::= IDENT "(" [ <arg_list> ] ")"
+<arg_list>          ::= <expr> { "," <expr> }
+
+<index_expr>        ::= <primary> "[" <expr> { "," <expr> } "]"
+<expr_index>        ::= IDENT "[" <expr> { "," <expr> } "]"
+
+<tensor_type_ctor>  ::= "Tensor" "[" <shape_list> "," <dtype> "]"
+<shape_list>        ::= <shape> { "," <shape> }
+<shape>             ::= INT | IDENT | "*"
+<dtype>             ::= "i8"|"i16"|"i32"|"i64"|"u8"|"u16"|"u32"|"u64"|"f16"|"f32"|"f64"|"bf16" 
+
+<model_ctor>        ::= "model" IDENT "(" [ <arg_list> ] ")"
+
+<optimizer_expr>    ::= IDENT "(" [ <kwarg_list> ] ")"
+<kwarg_list>        ::= <kwarg> { "," <kwarg> }
+<kwarg>             ::= IDENT "=" <expr>
+
+<literal>           ::= <number> | <string> | <bool>
+<number>            ::= INT | FLOAT
+<string>            ::= STRING
+<bool>              ::= "true" | "false"
+
+<binop>             ::= "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | ">" | "<=" | ">=" | "and" | "or" | "@" 
+<unop>              ::= "-" | "+" | "!" 
+
+<import_expr>       ::= "from" <module_path> "import" IDENT { "," IDENT } ";"
+
+<EOF>               ::= end of file
+
+
+Notes & extensions
+
+Blocks may optionally be indentation-based (future version) — the grammar uses explicit braces {} for unambiguous parsing.
+
+@ is matrix multiply operator.
+
+train statement syntax is simplified; actual compiler will support richer train-time DSL (callbacks, validation loops).
+
+Tensor type serves both as a type and as a value constructor depending on context (compiler resolves).
+
+model declarations define both a type and a constructor. Model members may be layers or functions.

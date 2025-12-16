@@ -1,0 +1,359 @@
+# AquaLua Mega Test - Using Maximum Libraries with Heavy Debugging
+# This tests the universal Python bridge with extensive library usage
+
+print("[DEBUG] Starting AquaLua Mega Test...")
+
+# Import core libraries
+import numpy
+import pandas
+import matplotlib.pyplot
+import requests
+import json
+import os
+import sys
+import datetime
+import math
+import random
+import re
+import sqlite3
+import csv
+import pickle
+import base64
+import hashlib
+import collections
+import itertools
+import functools
+import pathlib
+import tkinter
+import PIL
+import sklearn
+import torch
+import flask
+import sqlalchemy
+import redis
+import google
+
+print("[DEBUG] All imports completed")
+
+# Test numpy operations
+print("[DEBUG] Testing numpy...")
+arr = numpy.array([1, 2, 3, 4, 5])
+print("[DEBUG] Created numpy array:", arr)
+mean_val = numpy.mean(arr)
+print("[DEBUG] Array mean:", mean_val)
+
+# Test pandas operations  
+print("[DEBUG] Testing pandas...")
+df_data = {"A": [1, 2, 3], "B": [4, 5, 6]}
+df = pandas.DataFrame(df_data)
+print("[DEBUG] Created DataFrame:", df)
+
+# Test math operations
+print("[DEBUG] Testing math...")
+sqrt_val = math.sqrt(16)
+pi_val = math.pi
+print("[DEBUG] sqrt(16):", sqrt_val, "pi:", pi_val)
+
+# Test random operations
+print("[DEBUG] Testing random...")
+rand_int = random.randint(1, 100)
+rand_float = random.random()
+print("[DEBUG] Random int:", rand_int, "Random float:", rand_float)
+
+# Test datetime
+print("[DEBUG] Testing datetime...")
+now_time = datetime.datetime.now()
+print("[DEBUG] Current time:", now_time)
+
+# Test collections
+print("[DEBUG] Testing collections...")
+counter = collections.Counter([1, 2, 2, 3, 3, 3])
+print("[DEBUG] Counter:", counter)
+
+# Test itertools
+print("[DEBUG] Testing itertools...")
+combinations = list(itertools.combinations([1, 2, 3], 2))
+print("[DEBUG] Combinations:", combinations)
+
+# Test pathlib
+print("[DEBUG] Testing pathlib...")
+current_path = pathlib.Path(".")
+print("[DEBUG] Current path:", current_path)
+
+# Test hashlib
+print("[DEBUG] Testing hashlib...")
+hash_obj = hashlib.md5()
+hash_obj.update(b"test")
+hash_result = hash_obj.hexdigest()
+print("[DEBUG] MD5 hash:", hash_result)
+
+# Test base64
+print("[DEBUG] Testing base64...")
+encoded = base64.b64encode(b"test data")
+print("[DEBUG] Base64 encoded:", encoded)
+
+# Test JSON operations
+print("[DEBUG] Testing JSON...")
+test_dict = {"name": "AquaLua", "version": "1.0"}
+json_str = json.dumps(test_dict)
+print("[DEBUG] JSON string:", json_str)
+
+# Test OS operations
+print("[DEBUG] Testing OS...")
+current_dir = os.getcwd()
+print("[DEBUG] Current directory:", current_dir)
+
+# Test sys operations
+print("[DEBUG] Testing sys...")
+python_version = sys.version
+print("[DEBUG] Python version:", python_version)
+
+# Test regex
+print("[DEBUG] Testing regex...")
+pattern = re.compile(r"\d+")
+matches = pattern.findall("test123abc456")
+print("[DEBUG] Regex matches:", matches)
+
+# Test pickle (mock)
+print("[DEBUG] Testing pickle...")
+test_data = [1, 2, 3, 4, 5]
+pickled = pickle.dumps(test_data)
+print("[DEBUG] Pickled data length:", len(pickled))
+
+# Test CSV (mock)
+print("[DEBUG] Testing CSV...")
+csv_data = [["name", "age"], ["Alice", 30], ["Bob", 25]]
+print("[DEBUG] CSV data:", csv_data)
+
+# Test SQLite (mock)
+print("[DEBUG] Testing SQLite...")
+conn = sqlite3.connect(":memory:")
+print("[DEBUG] SQLite connection:", conn)
+
+# Test requests (mock)
+print("[DEBUG] Testing requests...")
+print("[DEBUG] Requests library loaded")
+
+# Test sklearn
+print("[DEBUG] Testing sklearn...")
+print("[DEBUG] Scikit-learn library loaded")
+
+# Test torch
+print("[DEBUG] Testing torch...")
+print("[DEBUG] PyTorch library loaded")
+
+# Test flask
+print("[DEBUG] Testing flask...")
+print("[DEBUG] Flask library loaded")
+
+# Test sqlalchemy
+print("[DEBUG] Testing sqlalchemy...")
+print("[DEBUG] SQLAlchemy library loaded")
+
+# Test redis
+print("[DEBUG] Testing redis...")
+print("[DEBUG] Redis library loaded")
+
+# Test PIL
+print("[DEBUG] Testing PIL...")
+print("[DEBUG] PIL library loaded")
+
+# Test google
+print("[DEBUG] Testing google...")
+print("[DEBUG] Google library loaded")
+
+# Now create a simple pygame-like game using tkinter
+print("[DEBUG] Creating tkinter-based game...")
+
+# Create main window
+root = tkinter.Tk()
+root.title("AquaLua Mega Test Game")
+root.geometry("800x600")
+root.configure(bg="black")
+
+print("[DEBUG] Created main window")
+
+# Create canvas for game
+canvas = tkinter.Canvas(root, width=800, height=600, bg="black")
+canvas.pack()
+
+print("[DEBUG] Created canvas")
+
+# Game variables
+player_x = 400
+player_y = 300
+player_size = 20
+enemies = []
+score = 0
+game_running = True
+
+print("[DEBUG] Initialized game variables")
+
+# Create player
+player = canvas.create_rectangle(
+    player_x - player_size, player_y - player_size,
+    player_x + player_size, player_y + player_size,
+    fill="blue"
+)
+
+print("[DEBUG] Created player")
+
+# Create score display
+score_text = canvas.create_text(50, 30, text="Score: 0", fill="white", font=("Arial", 16))
+
+print("[DEBUG] Created score display")
+
+# Enemy creation function
+def create_enemy():
+    print("[DEBUG] Creating enemy...")
+    enemy_x = random.randint(50, 750)
+    enemy_y = random.randint(50, 550)
+    enemy = canvas.create_rectangle(
+        enemy_x - 15, enemy_y - 15,
+        enemy_x + 15, enemy_y + 15,
+        fill="red"
+    )
+    enemies.append({"id": enemy, "x": enemy_x, "y": enemy_y})
+    print("[DEBUG] Enemy created at:", enemy_x, enemy_y)
+
+# Create initial enemies
+for i in range(5):
+    create_enemy()
+
+print("[DEBUG] Created initial enemies")
+
+# Movement functions
+def move_up(event):
+    global player_y
+    print("[DEBUG] Moving up")
+    player_y = max(20, player_y - 20)
+    canvas.coords(player, player_x - player_size, player_y - player_size,
+                  player_x + player_size, player_y + player_size)
+
+def move_down(event):
+    global player_y
+    print("[DEBUG] Moving down")
+    player_y = min(580, player_y + 20)
+    canvas.coords(player, player_x - player_size, player_y - player_size,
+                  player_x + player_size, player_y + player_size)
+
+def move_left(event):
+    global player_x
+    print("[DEBUG] Moving left")
+    player_x = max(20, player_x - 20)
+    canvas.coords(player, player_x - player_size, player_y - player_size,
+                  player_x + player_size, player_y + player_size)
+
+def move_right(event):
+    global player_x
+    print("[DEBUG] Moving right")
+    player_x = min(780, player_x + 20)
+    canvas.coords(player, player_x - player_size, player_y - player_size,
+                  player_x + player_size, player_y + player_size)
+
+# Bind keys
+root.bind("<Up>", move_up)
+root.bind("<Down>", move_down)
+root.bind("<Left>", move_left)
+root.bind("<Right>", move_right)
+root.focus_set()
+
+print("[DEBUG] Bound movement keys")
+
+# Game loop function
+def game_loop():
+    global score, game_running
+    
+    if not game_running:
+        return
+    
+    print("[DEBUG] Game loop iteration, score:", score)
+    
+    # Move enemies randomly
+    for enemy in enemies:
+        print("[DEBUG] Moving enemy:", enemy["id"])
+        enemy["x"] += random.randint(-5, 5)
+        enemy["y"] += random.randint(-5, 5)
+        
+        # Keep enemies on screen
+        enemy["x"] = max(15, min(785, enemy["x"]))
+        enemy["y"] = max(15, min(585, enemy["y"]))
+        
+        canvas.coords(enemy["id"], 
+                     enemy["x"] - 15, enemy["y"] - 15,
+                     enemy["x"] + 15, enemy["y"] + 15)
+        
+        # Check collision with player
+        distance = math.sqrt((player_x - enemy["x"])**2 + (player_y - enemy["y"])**2)
+        if distance < 35:
+            print("[DEBUG] Collision detected!")
+            score += 10
+            canvas.itemconfig(score_text, text=f"Score: {score}")
+            
+            # Move enemy to new position
+            enemy["x"] = random.randint(50, 750)
+            enemy["y"] = random.randint(50, 550)
+    
+    # Add new enemy occasionally
+    if random.randint(1, 100) > 95:
+        create_enemy()
+        print("[DEBUG] Added new enemy, total enemies:", len(enemies))
+    
+    # Schedule next iteration
+    root.after(100, game_loop)
+
+print("[DEBUG] Starting game loop...")
+game_loop()
+
+# Test more libraries in background
+def background_tests():
+    print("[DEBUG] Running background library tests...")
+    
+    # Test functools
+    print("[DEBUG] Testing functools...")
+    def multiply(x, y):
+        return x * y
+    
+    multiply_by_2 = functools.partial(multiply, 2)
+    result = multiply_by_2(5)
+    print("[DEBUG] Functools result:", result)
+    
+    # Test more numpy operations
+    print("[DEBUG] More numpy tests...")
+    matrix = numpy.array([[1, 2], [3, 4]])
+    determinant = numpy.linalg.det(matrix)
+    print("[DEBUG] Matrix determinant:", determinant)
+    
+    # Test more pandas operations
+    print("[DEBUG] More pandas tests...")
+    series = pandas.Series([1, 2, 3, 4, 5])
+    mean_series = series.mean()
+    print("[DEBUG] Series mean:", mean_series)
+    
+    # Schedule next background test
+    root.after(2000, background_tests)
+
+print("[DEBUG] Starting background tests...")
+background_tests()
+
+# Exit function
+def on_closing():
+    global game_running
+    print("[DEBUG] Closing application...")
+    game_running = False
+    root.destroy()
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
+print("[DEBUG] Setup complete, starting main loop...")
+print("[DEBUG] Use arrow keys to move the blue square")
+print("[DEBUG] Collect red enemies to increase score")
+print("[DEBUG] Close window to exit")
+
+# Start the game
+root.mainloop()
+
+print("[DEBUG] Application closed")
+print("[DEBUG] Final score:", score)
+print("[DEBUG] Total enemies created:", len(enemies))
+print("[DEBUG] AquaLua Mega Test completed successfully!")

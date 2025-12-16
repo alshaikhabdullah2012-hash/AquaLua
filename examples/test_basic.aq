@@ -1,0 +1,11 @@
+fn main() {
+    print("Basic test: Hello, AquaLua!")
+    
+    let x = 5
+    let y = 10
+    print("Math test: " + string(x + y))
+    
+    if x < y {
+        print("Logic test: Passed")
+    }
+}

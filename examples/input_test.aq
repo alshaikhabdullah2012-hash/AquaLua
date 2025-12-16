@@ -1,0 +1,16 @@
+# AquaLua Input Test
+print("=== AquaLua Input Test ===")
+
+# Test input function
+print("Testing input function...")
+name = input("Enter your name: ")
+print("Hello,", name)
+
+age = input("Enter your age: ")
+print("You are", age, "years old")
+
+# Test input with conversion
+age_num = int(age)
+print("Next year you will be", age_num + 1)
+
+print("=== Input Test Complete ===")

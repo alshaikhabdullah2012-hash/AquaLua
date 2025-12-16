@@ -1,0 +1,9 @@
+fn make_number(y){
+   let x:int=int(y)
+   return x 
+}
+i=input("enter your name")
+make_number(i)
+print(i)
+
+

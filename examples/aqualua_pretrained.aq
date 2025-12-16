@@ -1,0 +1,81 @@
+# AquaLua Pretrained Models Library
+# Easy access to popular ML models
+
+# Vision Models
+function load_resnet50():
+    print("Loading ResNet-50...")
+    let model = create_resnet_architecture(50)
+    load_weights(model, "resnet50_imagenet.weights")
+    return model
+
+function load_vit_base():
+    print("Loading Vision Transformer Base...")
+    let model = create_vit_architecture("base")
+    load_weights(model, "vit_base_patch16_224.weights")
+    return model
+
+# Language Models
+function load_gpt2():
+    print("Loading GPT-2...")
+    let model = create_transformer_architecture(
+        vocab_size=50257,
+        hidden_size=768,
+        num_layers=12,
+        num_heads=12
+    )
+    load_weights(model, "gpt2.weights")
+    return model
+
+function load_bert_base():
+    print("Loading BERT Base...")
+    let model = create_bert_architecture("base")
+    load_weights(model, "bert_base_uncased.weights")
+    return model
+
+# Audio Models
+function load_wav2vec2():
+    print("Loading Wav2Vec2...")
+    let model = create_wav2vec_architecture()
+    load_weights(model, "wav2vec2_base.weights")
+    return model
+
+# Multimodal Models
+function load_clip():
+    print("Loading CLIP...")
+    let vision_model = create_vit_architecture("base")
+    let text_model = create_transformer_architecture(
+        vocab_size=49408,
+        hidden_size=512,
+        num_layers=12,
+        num_heads=8
+    )
+    load_weights(vision_model, "clip_vision.weights")
+    load_weights(text_model, "clip_text.weights")
+    return {vision: vision_model, text: text_model}
+
+# Easy model loading
+function load_model(name):
+    if name == "resnet50":
+        return load_resnet50()
+    elif name == "vit":
+        return load_vit_base()
+    elif name == "gpt2":
+        return load_gpt2()
+    elif name == "bert":
+        return load_bert_base()
+    elif name == "wav2vec2":
+        return load_wav2vec2()
+    elif name == "clip":
+        return load_clip()
+    else:
+        print("Model not found:", name)
+        return null
+
+# Usage examples:
+print("AquaLua Pretrained Models Available:")
+print("- resnet50: Image classification")
+print("- vit: Vision Transformer")
+print("- gpt2: Text generation")
+print("- bert: Text understanding")
+print("- wav2vec2: Speech recognition")
+print("- clip: Vision-language model")

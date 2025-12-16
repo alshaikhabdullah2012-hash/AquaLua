@@ -1,0 +1,272 @@
+# AquaLua Complete Syntax Test - Every Feature
+print("=== COMPLETE AQUALUA SYNTAX TEST ===")
+
+# 1. VARIABLE DECLARATIONS
+let x = 42
+let y = 3.14
+let name = "AquaLua"
+let flag = true
+let empty = null
+const PI = 3.14159
+
+# 2. DATA TYPES
+let integer = 100
+let float_num = 99.99
+let string1 = "double quotes"
+let string2 = 'single quotes'
+let boolean_true = true
+let boolean_false = false
+let array = [1, 2, 3, "mixed", true]
+let dict = {"key": "value", "number": 42}
+
+# 3. OPERATORS - Arithmetic
+let add_result = 10 + 5
+let sub_result = 10 - 5
+let mul_result = 10 * 5
+let div_result = 10 / 5
+let mod_result = 10 % 3
+
+# 4. OPERATORS - Comparison
+let eq_test = 5 == 5
+let ne_test = 5 != 3
+let lt_test = 3 < 5
+let gt_test = 5 > 3
+let le_test = 3 <= 5
+let ge_test = 5 >= 3
+
+# 5. OPERATORS - Logical
+let and_test = true and false
+let or_test = true or false
+
+# 6. CONTROL FLOW - If statements (brace syntax)
+if x > 30 {
+    print("x is greater than 30")
+} elif x > 20 {
+    print("x is greater than 20")
+} else {
+    print("x is 20 or less")
+}
+
+# 7. CONTROL FLOW - If statements (colon syntax)
+if y > 3:
+    print("y is greater than 3")
+elif y > 2:
+    print("y is greater than 2")
+else:
+    print("y is 2 or less")
+
+# 8. LOOPS - While (brace syntax)
+let counter = 0
+while counter < 3 {
+    print("Counter:", counter)
+    counter = counter + 1
+}
+
+# 9. LOOPS - While (colon syntax)
+let counter2 = 0
+while counter2 < 2:
+    print("Counter2:", counter2)
+    counter2 = counter2 + 1
+
+# 10. LOOPS - For (brace syntax)
+for i in range(3) {
+    print("For loop i:", i)
+}
+
+# 11. LOOPS - For (colon syntax)
+for j in [1, 2, 3]:
+    print("For loop j:", j)
+
+# 12. FUNCTIONS - Basic (brace syntax)
+fn add_numbers(a, b) {
+    return a + b
+}
+
+# 13. FUNCTIONS - Basic (colon syntax)
+fn multiply_numbers(a, b):
+    return a * b
+
+# 14. FUNCTIONS - No parameters
+fn say_hello() {
+    return "Hello World!"
+}
+
+# 15. FUNCTIONS - Multiple statements
+fn complex_function(x, y) {
+    let temp = x + y
+    let result = temp * 2
+    return result
+}
+
+# 16. FUNCTION CALLS
+print("add_numbers(5, 3):", add_numbers(5, 3))
+print("multiply_numbers(4, 6):", multiply_numbers(4, 6))
+print("say_hello():", say_hello())
+print("complex_function(2, 3):", complex_function(2, 3))
+
+# 17. BUILT-IN FUNCTIONS
+print("len([1,2,3]):", len([1, 2, 3]))
+print("str(42):", str(42))
+print("int('123'):", int('123'))
+print("float('3.14'):", float('3.14'))
+print("abs(-5):", abs(-5))
+print("min(3, 7):", min(3, 7))
+print("max(3, 7):", max(3, 7))
+print("pow(2, 3):", pow(2, 3))
+
+# 18. ERROR HANDLING - Try/Except (brace syntax)
+try {
+    let bad_division = 10 / 0
+} except {
+    print("Caught an error in brace syntax")
+}
+
+# 19. ERROR HANDLING - Try/Except (colon syntax)
+try:
+    let another_error = 5 / 0
+except:
+    print("Caught an error in colon syntax")
+
+# 20. ERROR HANDLING - Try/Except/Finally
+try {
+    let risky_operation = 1 / 1
+    print("No error occurred")
+} except {
+    print("Error occurred")
+} finally {
+    print("Finally block executed")
+}
+
+# 21. CLASSES - Basic (brace syntax)
+class Person {
+    fn __init__(name, age) {
+        self.name = name
+        self.age = age
+    }
+    
+    fn get_name() {
+        return self.name
+    }
+    
+    fn get_age() {
+        return self.age
+    }
+}
+
+# 22. CLASSES - Basic (colon syntax)
+class Animal:
+    fn __init__(species):
+        self.species = species
+    
+    fn speak():
+        return "The " + self.species + " makes a sound"
+
+# 23. ARRAY/LIST OPERATIONS
+let test_array = [1, 2, 3, 4, 5]
+print("Array:", test_array)
+print("Array length:", len(test_array))
+
+# 24. DICTIONARY OPERATIONS
+let test_dict = {"name": "Alice", "age": 30, "city": "NYC"}
+print("Dictionary:", test_dict)
+print("Dictionary keys:", keys(test_dict))
+print("Dictionary values:", values(test_dict))
+
+# 25. STRING OPERATIONS
+let test_string = "Hello World"
+print("Original string:", test_string)
+print("Lowercase:", to_lower(test_string))
+
+# 26. MATRIX/TENSOR OPERATIONS
+let matrix_a = matrix_zeros([2, 2])
+let matrix_b = matrix_ones([2, 2])
+print("Matrix A shape:", matrix_shape(matrix_a))
+print("Matrix B shape:", matrix_shape(matrix_b))
+
+# 27. ADVANCED MATRIX OPERATIONS
+let random_matrix = matrix_random_normal([2, 3], 0.0, 1.0)
+let relu_result = matrix_relu(random_matrix)
+print("Matrix operations completed")
+
+# 28. ASSIGNMENTS
+x = 100
+y = x + 50
+name = "Updated Name"
+
+# 29. NESTED FUNCTION CALLS
+print("Nested calls:", add_numbers(multiply_numbers(2, 3), 4))
+
+# 30. COMPLEX EXPRESSIONS
+let complex_expr = (x + y) * 2 - 10 / 5
+print("Complex expression result:", complex_expr)
+
+# 31. BOOLEAN EXPRESSIONS
+let bool_expr = (x > 50) and (y < 200) or (name == "Updated Name")
+print("Boolean expression:", bool_expr)
+
+# 32. RETURN STATEMENTS
+fn early_return(value):
+    if value < 0:
+        return "Negative"
+    return "Positive or Zero"
+
+print("early_return(-5):", early_return(-5))
+print("early_return(5):", early_return(5))
+
+# 33. BREAK AND CONTINUE
+for i in range(10):
+    if i == 3:
+        continue
+    if i == 7:
+        break
+    print("Loop value:", i)
+
+# 34. NESTED LOOPS
+for outer in range(2):
+    for inner in range(2):
+        print("Nested:", outer, inner)
+
+# 35. NESTED IF STATEMENTS
+if x > 50:
+    if y > 100:
+        print("Both conditions true")
+    else:
+        print("Only first condition true")
+
+# 36. FUNCTION WITH CONDITIONALS
+fn grade_calculator(score):
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    else:
+        return "F"
+
+print("Grade for 85:", grade_calculator(85))
+
+# 37. RECURSIVE FUNCTION
+fn factorial(n):
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+print("Factorial of 5:", factorial(5))
+
+# 38. MULTIPLE RETURN VALUES (if supported)
+fn get_name_age():
+    return "Bob", 25
+
+# 39. LIST MANIPULATION
+let my_list = [1, 2, 3]
+append(my_list, 4)
+print("After append:", my_list)
+
+# 40. IMPORT STATEMENTS (if supported)
+# import math
+# from collections import defaultdict
+
+print("\n=== SYNTAX TEST COMPLETE ===")
+print("All major AquaLua syntax features tested!")

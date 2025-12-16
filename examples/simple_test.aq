@@ -1,0 +1,14 @@
+let x = 42
+let y = 3.14
+let message = "Hello AquaLua!"
+
+print("Testing AquaLua...")
+print("x =", x)
+print("y =", y) 
+print(message)
+
+fn greet(name) {
+    return "Hello, " + name + "!"
+}
+
+print(greet("World"))

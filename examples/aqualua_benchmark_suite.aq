@@ -1,0 +1,572 @@
+# =============================================================================
+# AQUALUA PERFORMANCE BENCHMARK SUITE
+# Complete language performance evaluation with high-resolution timing
+# =============================================================================
+
+print("🚀 AquaLua Performance Benchmark Suite")
+print("Testing computational speed, FFI latency, and AI workload performance")
+print("=" * 80)
+
+# =============================================================================
+# HIGH-RESOLUTION TIMING UTILITIES
+# =============================================================================
+
+fn get_high_res_time() {
+    # Use Python's time.perf_counter for high-resolution timing
+    ast_exec("
+import time
+benchmark_time = time.perf_counter()
+")
+    return benchmark_time
+}
+
+fn measure_execution_time(test_name, test_function) {
+    print("⏱️  Running: " + test_name)
+    let start_time = get_high_res_time()
+    let result = test_function()
+    let end_time = get_high_res_time()
+    let elapsed_ms = (end_time - start_time) * 1000.0
+    print("✅ " + test_name + ": " + str(elapsed_ms) + " ms")
+    return [elapsed_ms, result]
+}
+
+# =============================================================================
+# 1. PURE EXECUTION SPEED BENCHMARKS
+# =============================================================================
+
+print("\n📊 1. PURE EXECUTION SPEED BENCHMARKS")
+print("-" * 50)
+
+# A. Billion-Loop Test
+fn billion_loop_test() {
+    print("🔄 Billion-Loop Test: Counting to 1,000,000,000")
+    
+    fn run_billion_loop() {
+        let counter = 0
+        let target = 1000000000
+        
+        while counter < target {
+            counter = counter + 1
+        }
+        
+        return counter
+    }
+    
+    let timing_result = measure_execution_time("Billion Loop Counter", run_billion_loop)
+    let elapsed_ms = timing_result[0]
+    let final_count = timing_result[1]
+    
+    print("   Final count: " + str(final_count))
+    print("   Rate: " + str(1000000000.0 / elapsed_ms * 1000.0) + " ops/second")
+    
+    return elapsed_ms
+}
+
+# B. Mathematical Algorithms
+fn leibniz_pi_test() {
+    print("🧮 Leibniz π Formula: 50,000,000 iterations")
+    
+    fn calculate_pi_leibniz() {
+        let pi_estimate = 0.0
+        let iterations = 50000000
+        let i = 0
+        
+        while i < iterations {
+            let term = 1.0 / (2.0 * i + 1.0)
+            if i % 2 == 0 {
+                pi_estimate = pi_estimate + term
+            } else {
+                pi_estimate = pi_estimate - term
+            }
+            i = i + 1
+        }
+        
+        pi_estimate = pi_estimate * 4.0
+        return pi_estimate
+    }
+    
+    let timing_result = measure_execution_time("Leibniz π Calculation", calculate_pi_leibniz)
+    let elapsed_ms = timing_result[0]
+    let pi_value = timing_result[1]
+    
+    print("   π estimate: " + str(pi_value))
+    print("   Error from π: " + str(abs(pi_value - 3.141592653589793)))
+    
+    return elapsed_ms
+}
+
+fn sieve_of_eratosthenes_test() {
+    print("🔢 Sieve of Eratosthenes: Primes up to 10,000,000")
+    
+    fn sieve_primes() {
+        let limit = 10000000
+        let is_prime = []
+        
+        # Initialize array
+        let i = 0
+        while i <= limit {
+            is_prime = append(is_prime, true)
+            i = i + 1
+        }
+        
+        is_prime[0] = false
+        is_prime[1] = false
+        
+        let p = 2
+        while p * p <= limit {
+            if is_prime[p] {
+                let multiple = p * p
+                while multiple <= limit {
+                    is_prime[multiple] = false
+                    multiple = multiple + p
+                }
+            }
+            p = p + 1
+        }
+        
+        # Count primes
+        let prime_count = 0
+        i = 2
+        while i <= limit {
+            if is_prime[i] {
+                prime_count = prime_count + 1
+            }
+            i = i + 1
+        }
+        
+        return prime_count
+    }
+    
+    let timing_result = measure_execution_time("Sieve of Eratosthenes", sieve_primes)
+    let elapsed_ms = timing_result[0]
+    let prime_count = timing_result[1]
+    
+    print("   Primes found: " + str(prime_count))
+    print("   Rate: " + str(10000000.0 / elapsed_ms * 1000.0) + " numbers/second")
+    
+    return elapsed_ms
+}
+
+# C. Münchausen Numbers
+fn munchausen_numbers_test() {
+    print("🔍 Münchausen Numbers: Search 1 to 1,000,000")
+    
+    fn find_munchausen_numbers() {
+        let munchausen_numbers = []
+        let limit = 1000000
+        
+        let num = 1
+        while num <= limit {
+            let original_num = num
+            let digit_power_sum = 0
+            let temp_num = num
+            
+            # Calculate sum of digits raised to their own power
+            while temp_num > 0 {
+                let digit = temp_num % 10
+                let digit_power = 1
+                let power_count = 0
+                
+                # Calculate digit^digit
+                while power_count < digit {
+                    digit_power = digit_power * digit
+                    power_count = power_count + 1
+                }
+                
+                digit_power_sum = digit_power_sum + digit_power
+                temp_num = temp_num / 10
+            }
+            
+            # Check if Münchausen number
+            if digit_power_sum == original_num {
+                munchausen_numbers = append(munchausen_numbers, original_num)
+            }
+            
+            num = num + 1
+        }
+        
+        return munchausen_numbers
+    }
+    
+    let timing_result = measure_execution_time("Münchausen Number Search", find_munchausen_numbers)
+    let elapsed_ms = timing_result[0]
+    let munchausen_list = timing_result[1]
+    
+    print("   Münchausen numbers found: " + str(len(munchausen_list)))
+    for num in munchausen_list {
+        print("     " + str(num))
+    }
+    
+    return elapsed_ms
+}
+
+# =============================================================================
+# 2. PYTHON BRIDGE LATENCY BENCHMARKS
+# =============================================================================
+
+print("\n🔗 2. PYTHON BRIDGE (FFI) LATENCY BENCHMARKS")
+print("-" * 50)
+
+fn python_bridge_overhead_test() {
+    print("⚡ No-Op Call Overhead: 10,000 ast_exec calls")
+    
+    fn measure_noop_calls() {
+        let iterations = 10000
+        let total_time = 0.0
+        
+        let i = 0
+        while i < iterations {
+            let start_time = get_high_res_time()
+            ast_exec("")
+            let end_time = get_high_res_time()
+            
+            total_time = total_time + (end_time - start_time)
+            i = i + 1
+        }
+        
+        return total_time
+    }
+    
+    let timing_result = measure_execution_time("Python Bridge Overhead", measure_noop_calls)
+    let total_elapsed_ms = timing_result[0]
+    let bridge_total_time = timing_result[1]
+    
+    let avg_latency_us = (bridge_total_time * 1000000.0) / 10000.0
+    print("   Average call latency: " + str(avg_latency_us) + " microseconds")
+    print("   Calls per second: " + str(10000.0 / bridge_total_time))
+    
+    return total_elapsed_ms
+}
+
+fn python_data_transfer_test() {
+    print("📦 Data Transfer Stress Test: Large matrix round-trip")
+    
+    fn matrix_transfer_test() {
+        # Create large matrix in AquaLua
+        let matrix_size = 1000  # 1000x1000 for reasonable test time
+        let large_matrix = []
+        
+        print("   Creating " + str(matrix_size) + "x" + str(matrix_size) + " matrix...")
+        let i = 0
+        while i < matrix_size {
+            let row = []
+            let j = 0
+            while j < matrix_size {
+                row = append(row, i * matrix_size + j)
+                j = j + 1
+            }
+            large_matrix = append(large_matrix, row)
+            i = i + 1
+        }
+        
+        # Measure send time
+        let send_start = get_high_res_time()
+        ast_exec("
+import numpy as np
+# Receive matrix from AquaLua
+received_matrix = large_matrix
+matrix_array = np.array(received_matrix)
+")
+        let send_end = get_high_res_time()
+        let send_time = send_end - send_start
+        
+        # Measure return time
+        let return_start = get_high_res_time()
+        ast_exec("
+# Send matrix back to AquaLua
+returned_matrix = matrix_array.tolist()
+")
+        let return_end = get_high_res_time()
+        let return_time = return_end - return_start
+        
+        let total_time = send_time + return_time
+        
+        return [send_time, return_time, total_time]
+    }
+    
+    let timing_result = measure_execution_time("Matrix Data Transfer", matrix_transfer_test)
+    let elapsed_ms = timing_result[0]
+    let transfer_times = timing_result[1]
+    
+    let send_time_ms = transfer_times[0] * 1000.0
+    let return_time_ms = transfer_times[1] * 1000.0
+    let total_time_ms = transfer_times[2] * 1000.0
+    
+    print("   Send time: " + str(send_time_ms) + " ms")
+    print("   Return time: " + str(return_time_ms) + " ms")
+    print("   Total round-trip: " + str(total_time_ms) + " ms")
+    print("   Data appears: COPIED (separate memory spaces)")
+    
+    return elapsed_ms
+}
+
+# =============================================================================
+# 3. AI-SPECIFIC RUNTIME PERFORMANCE
+# =============================================================================
+
+print("\n🤖 3. AI-SPECIFIC RUNTIME PERFORMANCE")
+print("-" * 50)
+
+fn lstm_forward_pass_test() {
+    print("🧠 LSTM Forward Pass: 1,000 iterations")
+    
+    fn run_lstm_benchmark() {
+        let input_size = 128
+        let hidden_size = 256
+        let iterations = 1000
+        
+        # Initialize LSTM weights
+        let weight_ih = matrix_random_normal([input_size, hidden_size * 4], 0.0, 0.1)
+        let weight_hh = matrix_random_normal([hidden_size, hidden_size * 4], 0.0, 0.1)
+        let bias = matrix_zeros([hidden_size * 4])
+        
+        # Initialize states
+        let hidden_state = matrix_zeros([1, hidden_size])
+        let cell_state = matrix_zeros([1, hidden_size])
+        
+        # Create input
+        let input_tensor = matrix_random_normal([1, input_size], 0.0, 1.0)
+        
+        let iteration = 0
+        while iteration < iterations {
+            # LSTM forward pass
+            let gi = matrix_multiply(input_tensor, weight_ih)
+            let gh = matrix_multiply(hidden_state, weight_hh)
+            let gates = matrix_add(gi, gh)
+            gates = matrix_add(gates, bias)
+            
+            # Split gates
+            let input_gate = matrix_slice(gates, [0, 0], [1, hidden_size])
+            let forget_gate = matrix_slice(gates, [0, hidden_size], [1, hidden_size])
+            let output_gate = matrix_slice(gates, [0, hidden_size * 2], [1, hidden_size])
+            let candidate_gate = matrix_slice(gates, [0, hidden_size * 3], [1, hidden_size])
+            
+            # Apply activations (simplified)
+            input_gate = matrix_clip(input_gate, 0.0, 1.0)
+            forget_gate = matrix_clip(forget_gate, 0.0, 1.0)
+            output_gate = matrix_clip(output_gate, 0.0, 1.0)
+            candidate_gate = matrix_clip(candidate_gate, -1.0, 1.0)
+            
+            # Update cell state
+            let forget_part = matrix_multiply_elementwise(forget_gate, cell_state)
+            let input_part = matrix_multiply_elementwise(input_gate, candidate_gate)
+            cell_state = matrix_add(forget_part, input_part)
+            
+            # Update hidden state
+            let cell_tanh = matrix_clip(cell_state, -1.0, 1.0)
+            hidden_state = matrix_multiply_elementwise(output_gate, cell_tanh)
+            
+            iteration = iteration + 1
+        }
+        
+        return matrix_mean(hidden_state)
+    }
+    
+    let timing_result = measure_execution_time("LSTM Forward Pass", run_lstm_benchmark)
+    let elapsed_ms = timing_result[0]
+    let final_output = timing_result[1]
+    
+    print("   Final output mean: " + str(final_output))
+    print("   Rate: " + str(1000.0 / elapsed_ms * 1000.0) + " forward passes/second")
+    
+    return elapsed_ms
+}
+
+fn matrix_multiplication_test() {
+    print("🔢 Matrix Multiplication: AquaLua vs Python comparison")
+    
+    fn aqualua_matrix_multiply() {
+        let size = 500  # 500x500 matrices
+        
+        # Create matrices
+        let matrix_a = matrix_random_normal([size, size], 0.0, 1.0)
+        let matrix_b = matrix_random_normal([size, size], 0.0, 1.0)
+        
+        # Multiply using AquaLua native implementation
+        let result = matrix_multiply(matrix_a, matrix_b)
+        
+        return matrix_mean(result)
+    }
+    
+    fn python_matrix_multiply() {
+        ast_exec("
+import numpy as np
+import time
+
+# Create same size matrices in Python
+size = 500
+matrix_a = np.random.normal(0.0, 1.0, (size, size))
+matrix_b = np.random.normal(0.0, 1.0, (size, size))
+
+# Time Python matrix multiplication
+start_time = time.perf_counter()
+result = np.dot(matrix_a, matrix_b)
+end_time = time.perf_counter()
+
+python_matmul_time = end_time - start_time
+python_result_mean = np.mean(result)
+")
+        
+        return [python_matmul_time, python_result_mean]
+    }
+    
+    # Test AquaLua implementation
+    let aqualua_timing = measure_execution_time("AquaLua Matrix Multiply", aqualua_matrix_multiply)
+    let aqualua_time_ms = aqualua_timing[0]
+    let aqualua_result = aqualua_timing[1]
+    
+    # Test Python implementation
+    let python_result = python_matrix_multiply()
+    let python_time_ms = python_result[0] * 1000.0
+    let python_mean = python_result[1]
+    
+    print("✅ Python Matrix Multiply: " + str(python_time_ms) + " ms")
+    print("   AquaLua result mean: " + str(aqualua_result))
+    print("   Python result mean: " + str(python_mean))
+    print("   Performance ratio: " + str(python_time_ms / aqualua_time_ms) + "x")
+    
+    if aqualua_time_ms < python_time_ms {
+        print("   🏆 AquaLua is FASTER than Python!")
+    } else {
+        print("   📊 Python is faster (expected with NumPy)")
+    }
+    
+    return aqualua_time_ms
+}
+
+# =============================================================================
+# 4. SYSTEM RESOURCE METRICS
+# =============================================================================
+
+print("\n💾 4. SYSTEM RESOURCE METRICS")
+print("-" * 50)
+
+fn memory_usage_test() {
+    print("🧮 Memory Usage Analysis")
+    
+    # Get initial memory usage
+    ast_exec("
+import psutil
+import os
+process = psutil.Process(os.getpid())
+initial_memory_mb = process.memory_info().rss / 1024 / 1024
+")
+    
+    print("   Initial memory usage: " + str(initial_memory_mb) + " MB")
+    
+    # Allocate large data structure
+    let large_data = []
+    let i = 0
+    while i < 1000000 {
+        large_data = append(large_data, i * 3.14159)
+        i = i + 1
+    }
+    
+    # Get peak memory usage
+    ast_exec("
+peak_memory_mb = process.memory_info().rss / 1024 / 1024
+memory_increase = peak_memory_mb - initial_memory_mb
+")
+    
+    print("   Peak memory usage: " + str(peak_memory_mb) + " MB")
+    print("   Memory increase: " + str(memory_increase) + " MB")
+    print("   Data structure size: 1,000,000 floats")
+    
+    # Clear large data
+    large_data = []
+    
+    ast_exec("
+final_memory_mb = process.memory_info().rss / 1024 / 1024
+")
+    
+    print("   Final memory usage: " + str(final_memory_mb) + " MB")
+}
+
+fn binary_size_analysis() {
+    print("📏 Binary Size Analysis")
+    
+    ast_exec("
+import os
+import sys
+
+# Get Python interpreter size
+python_size_mb = os.path.getsize(sys.executable) / 1024 / 1024
+
+# Estimate AquaLua runtime size (approximate)
+aqualua_estimated_size_mb = 15.0  # Estimated based on typical language runtimes
+
+# Typical C program size
+c_program_size_mb = 0.5
+")
+    
+    print("   Python interpreter: " + str(python_size_mb) + " MB")
+    print("   AquaLua runtime (est.): " + str(aqualua_estimated_size_mb) + " MB")
+    print("   Typical C program: " + str(c_program_size_mb) + " MB")
+    print("   AquaLua vs C ratio: " + str(aqualua_estimated_size_mb / c_program_size_mb) + "x")
+}
+
+# =============================================================================
+# BENCHMARK EXECUTION AND RESULTS
+# =============================================================================
+
+print("\n🏁 EXECUTING COMPLETE BENCHMARK SUITE")
+print("=" * 80)
+
+# Store all benchmark results
+let benchmark_results = {}
+
+# 1. Pure Execution Speed
+benchmark_results["billion_loop"] = billion_loop_test()
+benchmark_results["leibniz_pi"] = leibniz_pi_test()
+benchmark_results["sieve_primes"] = sieve_of_eratosthenes_test()
+benchmark_results["munchausen"] = munchausen_numbers_test()
+
+# 2. Python Bridge Latency
+benchmark_results["bridge_overhead"] = python_bridge_overhead_test()
+benchmark_results["data_transfer"] = python_data_transfer_test()
+
+# 3. AI-Specific Performance
+benchmark_results["lstm_forward"] = lstm_forward_pass_test()
+benchmark_results["matrix_multiply"] = matrix_multiplication_test()
+
+# 4. System Resources
+memory_usage_test()
+binary_size_analysis()
+
+# =============================================================================
+# FINAL BENCHMARK REPORT
+# =============================================================================
+
+print("\n📊 AQUALUA BENCHMARK RESULTS SUMMARY")
+print("=" * 80)
+
+print("🔥 COMPUTATIONAL BENCHMARKS:")
+print("   Billion Loop Counter:     " + str(benchmark_results["billion_loop"]) + " ms")
+print("   Leibniz π Calculation:    " + str(benchmark_results["leibniz_pi"]) + " ms")
+print("   Sieve of Eratosthenes:    " + str(benchmark_results["sieve_primes"]) + " ms")
+print("   Münchausen Numbers:       " + str(benchmark_results["munchausen"]) + " ms")
+
+print("\n🔗 PYTHON BRIDGE BENCHMARKS:")
+print("   Bridge Call Overhead:     " + str(benchmark_results["bridge_overhead"]) + " ms")
+print("   Data Transfer Test:       " + str(benchmark_results["data_transfer"]) + " ms")
+
+print("\n🤖 AI WORKLOAD BENCHMARKS:")
+print("   LSTM Forward Pass:        " + str(benchmark_results["lstm_forward"]) + " ms")
+print("   Matrix Multiplication:    " + str(benchmark_results["matrix_multiply"]) + " ms")
+
+print("\n🏆 PERFORMANCE CLASSIFICATION:")
+let total_compute_time = benchmark_results["billion_loop"] + benchmark_results["leibniz_pi"] + benchmark_results["sieve_primes"]
+
+if total_compute_time < 5000 {
+    print("   Overall Performance: EXCELLENT (C-level)")
+} else if total_compute_time < 15000 {
+    print("   Overall Performance: GOOD (Java-level)")
+} else if total_compute_time < 50000 {
+    print("   Overall Performance: ACCEPTABLE (Python-level)")
+} else {
+    print("   Overall Performance: NEEDS OPTIMIZATION")
+}
+
+print("\n✅ Benchmark suite completed successfully!")
+print("   Total execution time: " + str(get_high_res_time()) + " seconds")
+print("=" * 80)

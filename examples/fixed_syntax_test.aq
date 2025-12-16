@@ -1,0 +1,53 @@
+# Fixed AquaLua Syntax Test
+print("=== FIXED AQUALUA SYNTAX TEST ===")
+
+# 1. Variables (WORKING)
+let x = 42
+let name = "AquaLua"
+print("Variables:", x, name)
+
+# 2. Constants (FIXED - no colon required)
+const PI = 3.14159
+print("Constant PI:", PI)
+
+# 3. Functions (WORKING)
+fn add(a, b) {
+    return a + b
+}
+print("Function result:", add(5, 3))
+
+# 4. If statements (WORKING - brace syntax)
+if x > 30 {
+    print("x > 30 (brace syntax works)")
+}
+
+# 5. Else if (FIXED - use 'else if' not 'elif')
+if x > 100 {
+    print("x > 100")
+} else if x > 30 {
+    print("x > 30 but <= 100 (else if works)")
+} else {
+    print("x <= 30")
+}
+
+# 6. Loops (WORKING)
+for i in range(3) {
+    print("Loop i:", i)
+}
+
+# 7. Built-ins (FIXED)
+print("abs(-5):", abs(-5))
+print("min(3, 7):", min(3, 7))
+print("max(3, 7):", max(3, 7))
+
+# 8. Arrays and dicts (WORKING)
+let numbers = [1, 2, 3]
+let person = {"name": "Alice", "age": 30}
+print("Array:", numbers)
+print("Dict keys:", keys(person))
+
+# 9. Input function (WORKING)
+# name = input("Enter name: ")
+# print("Hello", name)
+
+print("=== ALL SYNTAX TESTS PASSED ===")

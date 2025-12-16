@@ -1,0 +1,12 @@
+fn main() {
+    print("AI/ML test: Tensor operations")
+    
+    tensor a = random([2, 2])
+    tensor b = ones([2, 2])
+    tensor result = add(a, b)
+    
+    print("Tensor operations completed!")
+    
+    tensor activated = relu(result)
+    print("ReLU activation applied!")
+}

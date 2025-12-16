@@ -1,0 +1,201 @@
+# Complete AquaLua Syntax Test
+print("=== COMPLETE AQUALUA SYNTAX TEST ===")
+
+# 1. VARIABLES
+print("\n1. Variables:")
+let x = 42
+let y = 3.14
+let name = "AquaLua"
+let flag = true
+let empty = null
+const PI = 3.14159
+print("x =", x, "y =", y, "name =", name, "flag =", flag, "PI =", PI)
+
+# 2. ARITHMETIC
+print("\n2. Arithmetic:")
+print("10 + 5 =", 10 + 5)
+print("10 - 5 =", 10 - 5)
+print("10 * 5 =", 10 * 5)
+print("10 / 5 =", 10 / 5)
+print("10 % 3 =", 10 % 3)
+
+# 3. COMPARISON
+print("\n3. Comparison:")
+print("5 == 5:", 5 == 5)
+print("5 != 3:", 5 != 3)
+print("3 < 5:", 3 < 5)
+print("5 > 3:", 5 > 3)
+
+# 4. LOGICAL
+print("\n4. Logical:")
+print("true and false:", true and false)
+print("true or false:", true or false)
+
+# 5. FUNCTIONS - Brace Syntax
+print("\n5. Functions (Brace Syntax):")
+fn add_brace(a, b) {
+    print("Inside add_brace function")
+    return a + b
+}
+let result1 = add_brace(5, 3)
+print("add_brace(5, 3) =", result1)
+
+# 6. FUNCTIONS - Colon Syntax
+print("\n6. Functions (Colon Syntax):")
+fn add_colon(a, b):
+    print("Inside add_colon function")
+    return a * b
+let result2 = add_colon(4, 6)
+print("add_colon(4, 6) =", result2)
+
+# 7. IF STATEMENTS - Brace Syntax
+print("\n7. If Statements (Brace Syntax):")
+if x > 30 {
+    print("x is greater than 30 (brace)")
+} else {
+    print("x is not greater than 30 (brace)")
+}
+
+# 8. IF STATEMENTS - Colon Syntax
+print("\n8. If Statements (Colon Syntax):")
+if y > 3:
+    print("y is greater than 3 (colon)")
+else:
+    print("y is not greater than 3 (colon)")
+
+# 9. ELIF CHAINS
+print("\n9. Elif Chains:")
+let score = 85
+if score >= 90 {
+    print("Grade: A")
+} else if score >= 80 {
+    print("Grade: B")
+} else if score >= 70 {
+    print("Grade: C")
+} else {
+    print("Grade: F")
+}
+
+# 10. WHILE LOOPS - Brace Syntax
+print("\n10. While Loops (Brace Syntax):")
+let counter = 0
+while counter < 3 {
+    print("Counter (brace):", counter)
+    counter = counter + 1
+}
+
+# 11. WHILE LOOPS - Colon Syntax
+print("\n11. While Loops (Colon Syntax):")
+let counter2 = 0
+while counter2 < 2:
+    print("Counter2 (colon):", counter2)
+    counter2 = counter2 + 1
+
+# 12. FOR LOOPS - Brace Syntax
+print("\n12. For Loops (Brace Syntax):")
+for i in range(3) {
+    print("For i (brace):", i)
+}
+
+# 13. FOR LOOPS - Colon Syntax
+print("\n13. For Loops (Colon Syntax):")
+for j in [1, 2, 3]:
+    print("For j (colon):", j)
+
+# 14. ARRAYS/LISTS
+print("\n14. Arrays/Lists:")
+let numbers = [1, 2, 3, 4, 5]
+let mixed = [1, "hello", true, 3.14]
+print("numbers =", numbers)
+print("mixed =", mixed)
+print("numbers length =", len(numbers))
+
+# 15. DICTIONARIES
+print("\n15. Dictionaries:")
+let person = {"name": "Alice", "age": 30}
+print("person =", person)
+print("person keys =", keys(person))
+print("person values =", values(person))
+
+# 16. BUILT-IN FUNCTIONS
+print("\n16. Built-in Functions:")
+print("abs(-5) =", abs(-5))
+print("min(3, 7) =", min(3, 7))
+print("max(3, 7) =", max(3, 7))
+print("pow(2, 3) =", pow(2, 3))
+print("str(42) =", str(42))
+print("int('123') =", int('123'))
+print("float('3.14') =", float('3.14'))
+
+# 17. STRING OPERATIONS
+print("\n17. String Operations:")
+let text = "Hello World"
+print("Original:", text)
+print("Lowercase:", to_lower(text))
+
+# 18. NESTED FUNCTIONS
+print("\n18. Nested Functions:")
+fn outer_function(x):
+    fn inner_function(y):
+        return y * 2
+    return inner_function(x) + 1
+let nested_result = outer_function(5)
+print("nested result:", nested_result)
+
+# 19. RECURSIVE FUNCTION
+print("\n19. Recursive Function:")
+fn factorial(n):
+    if n <= 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+print("factorial(5) =", factorial(5))
+
+# 20. BREAK AND CONTINUE
+print("\n20. Break and Continue:")
+for i in range(10):
+    if i == 3:
+        continue
+    if i == 7:
+        break
+    print("Loop value:", i)
+
+# 21. MULTIPLE ASSIGNMENTS
+print("\n21. Multiple Assignments:")
+a = 10
+b = a + 5
+c = b * 2
+print("a =", a, "b =", b, "c =", c)
+
+# 22. COMPLEX EXPRESSIONS
+print("\n22. Complex Expressions:")
+let complex_result = (x + y) * 2 - 10 / 5 + pow(2, 3)
+print("Complex expression result:", complex_result)
+
+# 23. BOOLEAN EXPRESSIONS
+print("\n23. Boolean Expressions:")
+let bool_result = (x > 30) and (y < 5) or (name == "AquaLua")
+print("Boolean expression result:", bool_result)
+
+# 24. FUNCTION WITH MULTIPLE RETURNS
+print("\n24. Function with Multiple Returns:")
+fn check_number(num):
+    if num > 0:
+        return "positive"
+    elif num < 0:
+        return "negative"
+    else:
+        return "zero"
+print("check_number(5):", check_number(5))
+print("check_number(-3):", check_number(-3))
+print("check_number(0):", check_number(0))
+
+# 25. MATRIX OPERATIONS
+print("\n25. Matrix Operations:")
+let matrix_a = matrix_zeros([2, 2])
+let matrix_b = matrix_ones([2, 2])
+print("Matrix A shape:", matrix_shape(matrix_a))
+print("Matrix B shape:", matrix_shape(matrix_b))
+
+print("\n=== SYNTAX TEST COMPLETE ===")
+print("All major AquaLua features tested!")

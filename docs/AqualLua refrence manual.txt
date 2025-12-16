@@ -1,0 +1,434 @@
+B — Aquila Reference Manual (v0.1 draft)
+
+Below is a comprehensive manual covering language concepts, syntax, semantics, examples, standard library (core), error classes, and recommended implementation notes. Read it as the authoritative source for v0.1.
+
+Note: This is compact but complete. If you want a longer "book-style" manual (100+ pages), I can expand each section into dedicated chapters and examples — say which areas to expand first.
+
+Table of Contents (manual)
+
+Overview & Philosophy
+
+Quickstart examples
+
+Lexical conventions
+
+Types & type system
+
+Variables & scope
+
+Expressions & operators
+
+Statements & control flow
+
+Functions & generics
+
+Models & layers
+
+Tensors — shape/dtype/device semantics
+
+Datasets & I/O
+
+Training & optimizers
+
+Modules & imports
+
+Concurrency & async (planned)
+
+Memory & ownership model
+
+Error handling & diagnostics
+
+Standard library (core APIs + signatures)
+
+Tooling & CLI usage
+
+Interop & backends (PyTorch/ONNX)
+
+Security, licensing & model governance
+
+Appendix: examples & idioms
+
+1. Overview & Philosophy
+
+Aquila is designed to be a production-capable language that makes ML workflows first-class. It is statically typed for predictability and performance; its syntax is intentionally familiar to Python/Rust users, minimizing friction for ML engineers.
+
+Key goals:
+
+Expressive, readable code for ML
+
+Static guarantees for types & tensor shapes
+
+Aggressive compilation & kernel optimization
+
+Easy model experimentation → production
+
+2. Quickstart examples
+Hello world
+fn main() {
+    print("Hello Aquila")
+}
+
+Create tensor & matmul
+let a: Tensor[32, 128, f32] = random(32, 128)
+let b = random(128, 64)
+let c = a @ b    # matrix multiply, c: Tensor[32,64,f32]
+print(shape(c))
+
+Define a model
+model MLP {
+    l1: Linear(784, 256)
+    l2: Linear(256, 10)
+
+    fn forward(x: Tensor[B, 784]) -> Tensor[B, 10] {
+        return l2(relu(l1(x)))
+    }
+}
+
+Train
+dataset d = CIFAR10("data").batch(64).shuffle()
+model m = MLP()
+train m using Adam(lr=1e-3) on d for 5 epochs:
+    step(batch b) {
+        let out = m(b.x)
+        let loss = cross_entropy(out, b.y)
+        optimize(loss)
+        log(loss)
+    }
+
+3. Lexical conventions
+
+Identifiers: ASCII letters, digits, underscore; start with letter or underscore.
+
+Case-sensitive.
+
+Comments: # single-line; ### ... ### multiline.
+
+Files encoded in UTF-8.
+
+Semicolons optional in many constructs but recommended in top-level declarations for clarity. Braces mandatory in v0.1.
+
+4. Types & the type system
+
+4.1 Primitive numeric & scalar types
+
+Signed integers: i8, i16, i32, i64
+
+Unsigned integers: u8, u16, u32, u64
+
+Floating point: f16, f32, f64, bf16
+
+bool, str
+
+4.2 Tensor types
+
+Denoted Tensor[dim1, dim2, ..., dtype].
+
+Dimensions may be integers or symbolic names (e.g., B for batch).
+
+Use * when a dimension is unknown or dynamic.
+
+4.3 Type inference
+
+Local inference is supported; function parameter types must be annotated in v0.1.
+
+The compiler will infer common subexpressions; explicit annotations recommended for public APIs and model definitions.
+
+4.4 Generics
+
+Generic functions: fn id<T>(x: T) -> T.
+
+Generic types (later): List<T>, Map<K,V>.
+
+4.5 Type coercion
+
+Implicit widening allowed for numeric constants (e.g., 1 can become f32 if context requires).
+
+No implicit downcast — explicit cast API: cast(tensor, f16).
+
+5. Variables & scope
+
+let declares mutable bindings. const is immutable.
+
+Block scope — variables live until out of scope.
+
+Models and functions are top-level constructs by default.
+
+Lexical scoping: closures capture environment (compiler will create closures with static capture when required).
+
+6. Expressions & operators
+
+Operators:
+
+Arithmetic: + - * / %
+
+Matrix multiply: @
+
+Comparisons: == != < > <= >=
+
+Logic: and, or, !
+
+Indexing: x[i], x[i,j]
+
+Slicing: x[start:end] (syntax extension in v0.2)
+
+Function calls: f(a,b)
+
+Operator precedence:
+(Highest) unary - ! → * / % → + - → @ → comparisons → and → or (Lowest).
+
+7. Statements & control flow
+
+if/else, while, for available.
+
+match pattern matching planned for v0.2.
+
+return inside functions returns a value (type-checked).
+
+8. Functions & generics
+
+Functions declared with fn name(params) -> type { ... }.
+
+All parameters must have types; return type may be inferred but explicit annotation recommended.
+
+Functions can be nested (closures); the compiler will transform closures to capture environment.
+
+9. Models & layers
+
+Model declaration defines named components (layers) and methods (forward).
+
+model Name {
+    layer1: Linear(32,64)
+    fn forward(x: Tensor[B, 32]) -> Tensor[B,64] {
+        return layer1(x)
+    }
+}
+
+
+Layers are treated as parameters with types and shapes.
+
+model instantiation allocates parameters and binds operations.
+
+Layer constructors (core):
+
+Linear(in,out)
+
+Conv2D(inC,outC,kernel, stride=1, padding=0)
+
+BatchNorm(dim)
+
+Sequential(...) — composite container
+
+Activation functions: relu, sigmoid, tanh, gelu
+
+Model forward calls are typed and validated at compile time; backward pass is generated by the compiler.
+
+10. Tensors — shape/dtype/device semantics
+
+Tensors have shape, dtype and device metadata.
+
+Default device is auto; compiler/runtime chooses GPU if available and beneficial.
+
+Device override: to(device) or type annotation with device.
+
+Broadcasting semantics match NumPy/PyTorch rules.
+
+Mutating ops are allowed only on mutable tensors; otherwise operations return new tensors (functional style recommended).
+
+Example:
+
+let x: Tensor[B,3,224,224,f32] = random(B,3,224,224)
+let y = x.mean(dim=[2,3])  # y: Tensor[B,3,f32]
+
+11. Datasets & I/O
+
+Builtins:
+
+CSV(path), ImageFolder(path), CIFAR10(path), MNIST(path)
+
+Dataset helpers: .map(transform), .batch(int), .shuffle(buffer), .repeat()
+
+Example pipeline:
+
+let ds = ImageFolder("data")
+          .map(resize(224,224))
+          .map(augment)
+          .batch(64)
+          .shuffle(1000)
+
+
+I/O:
+
+save(model, path) writes model parameters to safetensors or native Aquila format.
+
+load(path) returns model artifact (or tensor).
+
+12. Training & optimizers
+
+train is the top-level DSL construct for training.
+
+Minimal semantics
+
+train model m using Adam(lr=1e-3) on dataset d for N epochs: block
+
+Inside block: step(batch b) { ... } — each step receives a batch.
+
+optimize(loss) triggers gradient computation and single optimizer update.
+
+report / log to emit metrics.
+
+Optimizer options
+
+SGD(lr, momentum=0)
+
+Adam(lr, beta1=0.9, beta2=0.999)
+
+RMSProp(lr)
+
+Advanced training flags (future)
+
+accumulate_gradients(steps=...)
+
+mixed_precision = true
+
+distributed(world_size = N)
+
+13. Modules & imports
+
+import name or from mod import name as alias
+
+Each file becomes a module; modules can export __all__.
+
+Package manager (future) will manage remote modules.
+
+14. Concurrency & async (planned)
+
+v0.1: synchronous only.
+
+v0.2+: async / data-parallel primitives + futures for streaming inference.
+
+15. Memory & ownership model
+
+Tensors are large objects with explicit allocation.
+
+Default model: deterministic lifetime; explicit drop(tensor) to free memory in extreme cases (optional).
+
+For predictable memory usage, the compiler reuses buffers where possible (liveness analysis).
+
+16. Error handling & diagnostics
+
+Categories:
+
+Parse errors (line/col)
+
+Type errors (mismatch, missing annotations)
+
+Shape errors (dimension mismatch)
+
+Device mismatch
+
+Runtime errors (out-of-memory, invalid op)
+
+Compiler errors will include:
+
+Error code (e.g., AQ-TYPE-001)
+
+Short description
+
+Suggested fix
+
+Source location
+
+Example:
+
+AQ-TYPE-005: Tensor shape mismatch
+  at model.mlp.forward: line 42, col 10
+  expected Tensor[B,784], got Tensor[B,128]
+  Suggestion: reshape input to 784 or change linear input size.
+
+17. Standard library (core APIs + signatures)
+
+Below are the most important builtins (v0.1):
+
+Tensor creation
+random(*shape, dtype=f32) -> Tensor[shape..., dtype]
+zeros(*shape, dtype=f32) -> ...
+ones(*shape, dtype=f32)
+eye(n, dtype=f32)
+
+Tensor ops
+matmul(a,b)   # or using operator: a @ b
+reshape(t, shape)
+flatten(t)
+transpose(t, dims)
+sum(t, dim=None)
+mean(t, dim=None)
+max(t, dim=None)
+min(t, dim=None)
+argmax(t, dim=None)
+concatenate(list_of_tensors, dim=0)
+
+Neural layers (nn module)
+Linear(in:int, out:int) -> Layer
+Conv2D(inC:int, outC:int, kernel:int, stride=1, padding=0) -> Layer
+BatchNorm(dim:int) -> Layer
+Dropout(rate:float)
+Sequential(*layers) -> Layer
+ReLU()
+Sigmoid()
+Softmax(dim=1)
+
+Optimizers
+SGD(lr:float, momentum:float=0.0)
+Adam(lr:float, beta1:float=0.9, beta2:float=0.999)
+RMSProp(lr:float)
+
+Losses
+cross_entropy(pred, target)
+mse(pred, target)
+bce_with_logits(pred, target)
+
+IO
+save_model(m, path)
+load_model(path) -> model
+save_tensor(t, path)
+load_tensor(path)
+
+Data
+ImageFolder(path) -> Dataset
+CSV(path) -> Dataset
+MNIST(path) -> Dataset
+CIFAR10(path) -> Dataset
+
+18. Tooling & CLI usage
+
+aquila run file.aq — run a script
+
+aquila repl — interactive REPL
+
+aquila build file.aq -o program — compile to executable (future)
+
+aquila fmt file.aq — formatting
+
+aquila test — run language tests
+
+19. Interop & backends
+
+Initial implementation will bind to PyTorch for tensor execution & autograd. Compiler will optionally lower to ONNX/MLIR for optimized inference. Interop APIs allow calling Python functions and returning Aquila types with conversion rules.
+
+20. Security, licensing & model governance
+
+Model download via load "url" must prompt license/terms in REPL/CI.
+
+Optional metadata: @license, @model-card annotations in model files.
+
+Telemetry opt-in only.
+
+21. Appendix: Idioms & best practices
+
+Prefer explicit shapes for public functions.
+
+Use const for hyperparameters.
+
+Avoid large eager clones — use inplace ops where indicated by compiler.
+
+Use training DSL to unlock graph-level optimizations (do not hand-roll training loops unless needed).

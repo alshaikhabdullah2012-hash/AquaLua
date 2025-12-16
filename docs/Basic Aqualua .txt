@@ -1,0 +1,398 @@
+🟦 LANGUAGE SPECIFICATION — “Aquila” (temporary name)
+
+Version: 0.1 Draft
+Paradigm: statically-typed, compiled, AI-first, tensor-native
+Targets: CPU, GPU, MLIR, ONNX
+
+1. Core Philosophy
+
+Aquila is a statically typed, compiled, AI-first programming language designed for:
+
+high-performance tensor computation
+
+neural network definition
+
+model training and inference
+
+predictable, optimizable execution
+
+Python-like ease of writing code
+
+C++/Rust-like performance
+
+Aquila combines:
+
+Python-like syntax
+
+Rust-like type system and generics
+
+Triton-like GPU kernel efficiency
+
+built-in ML primitives (tensor, dataset, model, optimizer)
+
+2. Lexical Structure
+2.1 Whitespace
+
+Indentation defines code blocks.
+Tabs are not allowed. Only spaces (recommended: 4).
+
+2.2 Comments
+# Single line comment
+
+###
+Multi-line
+comment
+###
+
+2.3 Identifiers
+[a-zA-Z_][a-zA-Z0-9_]*
+
+
+Case-sensitive.
+
+2.4 Keywords (reserved)
+fn
+let
+const
+model
+train
+step
+return
+import
+from
+as
+type
+device
+tensor
+dataset
+epoch
+optimize
+log
+for
+in
+if
+else
+match
+
+3. Types
+3.1 Primitive Types
+i8, i16, i32, i64
+u8, u16, u32, u64
+f16, f32, f64
+bool
+str
+
+3.2 Tensor Type
+
+The core data structure.
+
+Syntax:
+
+Tensor[shape..., dtype]
+
+
+Shape entries may be:
+
+integers (224, 1024)
+
+symbolic (B, C, T)
+
+Examples:
+
+Tensor[32, 32, f32]
+Tensor[B, 3, 224, 224, f16]
+Tensor[*, f32]           # rank-unknown
+
+3.3 Struct Types
+
+User-defined composite types:
+
+type Point {
+    x: f32
+    y: f32
+}
+
+3.4 Model Types
+
+Special first-class type:
+
+model MLP {
+    w1: Linear(784, 256)
+    w2: Linear(256, 10)
+
+    fn forward(x: Tensor[B, 784]) -> Tensor[B, 10] {
+        return w2(relu(w1(x)))
+    }
+}
+
+4. Variables
+4.1 Mutable variable
+let x: i32 = 5
+
+4.2 Immutable variable
+const PI: f32 = 3.14159
+
+4.3 Type inference
+let x = 10          # inferred: i32
+let y = linear(x)   # inferred
+
+5. Functions
+5.1 Syntax
+fn name(args...) -> return_type:
+    statements
+
+
+Example:
+
+fn add(a: i32, b: i32) -> i32:
+    return a + b
+
+5.2 Generics
+fn identity<T>(x: T) -> T:
+    return x
+
+5.3 Overloading
+
+Allowed for:
+
+numeric ops
+
+tensor ops
+
+user-defined types
+
+6. Expressions
+
+Aquila supports:
+
+arithmetic
+
+boolean logic
+
+tensor ops
+
+model calls
+
+function calls
+
+indexing
+
+Examples:
+
+a + b
+relu(x)
+tensor[1,2,3]
+x[0]
+
+7. Control Flow
+7.1 If / Else
+if loss > 1.0:
+    log("High loss")
+else:
+    log("OK")
+
+7.2 For Loops
+for i in range(10):
+    log(i)
+
+7.3 Match (pattern matching)
+match x:
+    0 => print("zero")
+    1 => print("one")
+    _ => print("other")
+
+8. Modules
+8.1 Import
+import math
+from vision import Conv2D as Conv
+
+8.2 Files
+
+Each file is a module.
+
+9. Tensor and ML Primitives
+9.1 Built-in Tensor Functions
+relu
+sigmoid
+softmax
+matmul
+conv2d
+flatten
+reshape
+mean
+sum
+max
+min
+
+9.2 Built-in Layers
+Linear(in, out)
+Conv2D(inC, outC, kernel=3, stride=1, padding=1)
+BatchNorm(dim)
+Dropout(rate)
+
+9.3 Model Forward Call
+y = model(x)
+
+10. Autodiff
+
+Automatic differentiation is part of the compiler.
+
+Rules:
+
+Any function calling tensor ops becomes a computation graph
+
+Backward pass generated automatically
+
+Gradients tracked per model parameter
+
+Optimizers update parameters
+
+No requires_grad needed.
+
+11. Optimizers
+
+Built-in:
+
+SGD(lr, momentum?)
+Adam(lr, beta1?, beta2?)
+RMSProp(lr?)
+
+
+Usage:
+
+train m using Adam(lr=0.001)
+
+12. Datasets
+
+Built-in dataset type:
+
+dataset d = ImageFolder("data").batch(32).shuffle()
+
+13. Training Syntax
+Unique Aquila feature.
+train model m using Adam(lr=0.001)
+on dataset d for 10 epochs:
+    
+    step(batch b):
+        let pred = m(b.x)
+        let loss = cross_entropy(pred, b.y)
+        optimize(loss)
+        log(loss)
+
+
+Compiler generates:
+
+training loop
+
+autodiff
+
+optimizer steps
+
+metrics
+
+device placement
+
+14. Devices
+device cpu
+device gpu
+device auto       # default
+
+m.to(gpu)
+
+
+Compiler decides optimal placement unless overridden.
+
+15. Memory Model
+
+linear type system for tensor memory
+
+no garbage collection
+
+deterministic tensor lifetime
+
+ownership model similar to Rust but simplified:
+
+tensors are unique owners
+
+cloned explicitly
+
+16. Error System
+
+Compile-time errors:
+
+type mismatch
+
+tensor shape mismatch
+
+device mismatch
+
+illegal mutation
+
+unknown identifier
+
+17. Examples
+17.1 Hello World
+fn main():
+    print("Hello Aquila!")
+
+17.2 Simple Neural Net
+model MLP {
+    l1: Linear(784, 256)
+    l2: Linear(256, 10)
+
+    fn forward(x: Tensor[B, 784]) -> Tensor[B, 10]:
+        return l2(relu(l1(x)))
+}
+
+17.3 Training Example
+dataset d = CSV("mnist.csv").batch(32)
+
+model m = MLP()
+
+train m using SGD(lr=0.01)
+on d for 5 epochs:
+
+    step(batch b):
+        let out = m(b.x)
+        let loss = cross_entropy(out, b.y)
+        optimize(loss)
+        log(loss)
+
+18. Compiler Pipeline
+Source → Lexer → Parser → AST → Type Checker
+→ Graph Extractor → MLIR Lowering → Optimizer
+→ LLVM/CUDA Codegen → Executable / Model Artifact
+
+19. Standard Library
+
+math
+
+tensor
+
+vision
+
+optim
+
+io
+
+datasets
+
+sys
+
+random
+
+20. Future Features (v0.2+)
+
+GPU kernel programming (Triton-like blocks)
+
+JIT mode
+
+WebGPU support
+
+ONNX import
+
+Distributed training
+
+Quantization tools
+
+Real-time inference pipelines
