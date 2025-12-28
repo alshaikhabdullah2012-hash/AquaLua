@@ -1,3 +1,6 @@
+THIS PROJECT HAS BEEN STOPPED AND SHOULD NEVER BE USED:
+FROM THE AUTHOR.
+
 # AquaLua Programming Language
 
 **AI-First Programming Language with High-Performance C Backend**
@@ -132,4 +135,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 **AquaLua** - Making AI development faster and more intuitive."# AquaLua" 
+
 
